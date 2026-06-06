@@ -207,14 +207,15 @@
 
         textarea {
             width: 100%;
-            height: 180px;
+            height: 300px;
             background: #090d16;
             color: #67e8f9;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 10px;
             font-family: monospace;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            line-height: 1.4;
             resize: none;
             outline: none;
         }
@@ -223,7 +224,7 @@
 
         button.action-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 8px;
             font-size: 0.95rem;
@@ -235,6 +236,53 @@
         .btn-check { background: var(--accent-success); }
         .btn-skip { background: #334155; }
 
+        .preview-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-fullscreen {
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #334155;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-fullscreen:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .preview-container {
+            background: #000;
+            border-radius: 8px;
+            height: 440px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #334155;
+        }
+
+        /* Fullscreen presentation frame mechanics */
+        .preview-container:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            border-radius: 0;
+            border: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
+        }
+
         .feedback {
             padding: 10px;
             border-radius: 6px;
@@ -245,23 +293,6 @@
 
         .feedback.success { display: block; background: rgba(16, 185, 129, 0.2); color: #34d399; }
         .feedback.error { display: block; background: rgba(239, 68, 68, 0.2); color: #f87171; }
-
-        .preview-container {
-            background: #000;
-            border-radius: 8px;
-            height: 320px;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid #334155;
-        }
-
-        /* Iframe styling for running free code securely */
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #ffffff;
-        }
 
         .chat-section {
             border-top: 1px solid var(--border-color);
@@ -313,11 +344,11 @@
 </head>
 <body>
 
-    <div id="network-status">● Core Sandbox Active: Multi-Track Framework</div>
+    <div id="network-status">● Core Sandbox Active: Immersive Full-Source Framework</div>
 
     <header>
-        <h1>Infinite Basics, Games & Free Lab Sandbox</h1>
-        <p>Switch between fundamental development tracks, repair classic arcade components, or code entirely from scratch.</p>
+        <h1>Infinite Full-Source Sandbox & Lab</h1>
+        <p>Analyze full application source codes to understand operations, patch complex runtime bugs, or code freely.</p>
     </header>
 
     <div class="course-selector-container">
@@ -353,13 +384,13 @@
     <div class="main-layout">
         <div class="card">
             <div class="lesson-title">
-                <span id="lesson-header">Connecting Core Pipeline...</span>
+                <span id="lesson-header">Connecting Engine Workbench...</span>
                 <span class="badge" id="difficulty-badge">BOOTING</span>
             </div>
             <div class="lesson-concept" id="lesson-desc">...</div>
             
             <div class="task-box" id="task-panel">
-                <strong>Glitch Diagnostic:</strong>
+                <strong>Glitch Diagnostic Ticket:</strong>
                 <div id="lesson-task">...</div>
             </div>
 
@@ -369,7 +400,7 @@
 
             <div class="btn-group" id="action-btn-group">
                 <button class="action-btn btn-skip" id="skip-btn">Skip Module</button>
-                <button class="action-btn btn-check" id="check-btn">Patch Code</button>
+                <button class="action-btn btn-check" id="check-btn">Compile & Verify Fix</button>
             </div>
 
             <div class="feedback" id="feedback-box"></div>
@@ -377,17 +408,20 @@
             <div class="chat-section">
                 <strong>📟 Dynamic Real-Time Copilot</strong>
                 <div class="chat-history" id="chat-box">
-                    <div class="chat-msg bot">Systems ready. Ask me custom questions about tags, structures, document types, or game states!</div>
+                    <div class="chat-msg bot">Source engine synced. Ask me questions regarding game loops, requestAnimationFrame, or layout markers!</div>
                 </div>
                 <div class="chat-input-wrapper">
-                    <input type="text" id="chat-input" placeholder="Type your layout or syntax question...">
+                    <input type="text" id="chat-input" placeholder="Ask a question about the game source logic...">
                     <button class="btn-send" id="chat-send">Ask</button>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <div class="lesson-title">Sandbox Execution Output</div>
+            <div class="preview-header-bar">
+                <div class="lesson-title">Sandbox Execution Output</div>
+                <button class="btn-fullscreen" onclick="toggleFullscreen()">🖥️ Full-Screen View</button>
+            </div>
             <div class="preview-container" id="sandbox-wrapper">
                 </div>
         </div>
@@ -396,24 +430,14 @@
     <script>
         let state = { level: 1, streak: 0, xp: 0, trackingSeed: 0, currentTrack: 'basics_doc', freeCodeSaved: "\n<div style='padding:20px; text-align:center;'>\n  <h1 style='color:#3b82f6;'>Hello World!</h1>\n  <p>Modify this code to see changes happen live in the preview container below.</p>\n  <button onclick='alert(\"It works!\")' style='padding:10px 20px; background:#10b981; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px;'>Test Button</button>\n</div>" };
         
-        if (localStorage.getItem("unified_sandbox_save_v4")) {
-            try { state = JSON.parse(localStorage.getItem("unified_sandbox_save_v4")); } catch(e) {}
+        if (localStorage.getItem("unified_sandbox_save_v5")) {
+            try { state = JSON.parse(localStorage.getItem("unified_sandbox_save_v5")); } catch(e) {}
         }
 
-        function save() { localStorage.setItem("unified_sandbox_save_v4", JSON.stringify(state)); }
+        function save() { localStorage.setItem("unified_sandbox_save_v5", JSON.stringify(state)); }
 
-        // Core Micro Game & App Engine Display Controller
         const AppEngine = {
-            activeLoop: null,
-            
-            renderStaticDOM: function(targetId, htmlContent) {
-                this.clear();
-                const container = document.getElementById(targetId);
-                container.innerHTML = `<div style="padding:15px; background:#0f172a; height:100%; color:#f8fafc; font-size:0.9rem; line-height:1.5;">${htmlContent}</div>`;
-            },
-
             renderLiveIframe: function(targetId, rawHTML) {
-                this.clear();
                 const container = document.getElementById(targetId);
                 container.innerHTML = `<iframe id="preview-frame"></iframe>`;
                 const frame = document.getElementById("preview-frame");
@@ -421,150 +445,126 @@
                 frameDoc.open();
                 frameDoc.write(rawHTML);
                 frameDoc.close();
-            },
-
-            renderFlappyGame: function(targetId, isGlitchy, speedMod = 1) {
-                this.clear();
-                const container = document.getElementById(targetId);
-                container.innerHTML = `<canvas id="gameCanvas" width="400" height="280" style="display:block; width:100%; height:100%;"></canvas>`;
-                const canvas = document.getElementById("gameCanvas");
-                if(!canvas) return;
-                const ctx = canvas.getContext("2d");
-                
-                let birdY = 120, velocity = 0, score = 0;
-                let pipes = [{x: 400, top: 70, bottom: 155}];
-                let gameOver = false;
-
-                canvas.onclick = () => { if(!gameOver) velocity = -4.5; else this.renderFlappyGame(targetId, isGlitchy, speedMod); };
-
-                const run = () => {
-                    ctx.fillStyle = isGlitchy ? "#2b1111" : "#1e293b";
-                    ctx.fillRect(0,0,400,280);
-                    
-                    if (isGlitchy) {
-                        ctx.fillStyle = "#ef4444";
-                        ctx.font = "14px monospace";
-                        ctx.fillText("CRITICAL ERROR: DOCTYPE COMPILATION MISSING", 20, 140);
-                        return;
-                    }
-
-                    velocity += 0.25;
-                    birdY += velocity;
-
-                    ctx.fillStyle = "#f59e0b";
-                    ctx.beginPath(); ctx.arc(60, birdY, 10, 0, Math.PI*2); ctx.fill();
-
-                    pipes.forEach(p => {
-                        p.x -= (2 * speedMod);
-                        ctx.fillStyle = "#10b981";
-                        ctx.fillRect(p.x, 0, 40, p.top);
-                        ctx.fillRect(p.x, p.bottom, 40, 280 - p.bottom);
-
-                        if(p.x === 60) score++;
-
-                        if(((60+10 > p.x && 60-10 < p.x+40) && (birdY-10 < p.top || birdY+10 > p.bottom)) || birdY > 280 || birdY < 0) {
-                            gameOver = true;
-                        }
-                    });
-
-                    if(pipes.length && pipes[0].x < -40) pipes.shift();
-                    if(!pipes.length || pipes[pipes.length-1].x < 260) {
-                        let top = Math.random() * 110 + 20;
-                        pipes.push({x: 400, top: top, bottom: top + 85});
-                    }
-
-                    ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif";
-                    ctx.fillText(`Score: ${score}`, 15, 30);
-
-                    if(gameOver) {
-                        ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(0,0,400,280);
-                        ctx.fillStyle = "#fff"; ctx.fillText("GAME OVER - Click to Replay", 95, 140);
-                    } else {
-                        this.activeLoop = requestAnimationFrame(run);
-                    }
-                };
-                run();
-            },
-
-            renderPongGame: function(targetId, isGlitchy, sizeMod = 1) {
-                this.clear();
-                const container = document.getElementById(targetId);
-                container.innerHTML = `<canvas id="gameCanvas" width="400" height="280" style="display:block; width:100%; height:100%;"></canvas>`;
-                const canvas = document.getElementById("gameCanvas");
-                const ctx = canvas.getContext("2d");
-
-                let paddleY = 100, ballX = 200, ballY = 140, dx = 3, dy = 2;
-                let paddleH = isGlitchy ? 4 : 55 * sizeMod;
-
-                canvas.onmousemove = (e) => {
-                    const rect = canvas.getBoundingClientRect();
-                    paddleY = ((e.clientY - rect.top) / rect.height) * 280 - paddleH/2;
-                };
-
-                const loop = () => {
-                    ctx.fillStyle = "#0f172a"; ctx.fillRect(0,0,400,280);
-                    
-                    ctx.fillStyle = "#3b82f6";
-                    ctx.fillRect(10, paddleY, 12, paddleH);
-
-                    ballX += dx; ballY += dy;
-                    if(ballY < 0 || ballY > 280) dy = -dy;
-                    if(ballX > 400) dx = -dx;
-
-                    if(ballX < 22 && ballY > paddleY && ballY < paddleY + paddleH) {
-                        dx = -dx; ballX = 22;
-                    }
-
-                    if(ballX < 0) { ballX = 200; ballY = 140; dx = 3; }
-
-                    ctx.fillStyle = "#ef4444";
-                    ctx.beginPath(); ctx.arc(ballX, ballY, 6, 0, Math.PI*2); ctx.fill();
-
-                    if(isGlitchy) {
-                        ctx.fillStyle = "#ef4444"; ctx.font = "12px monospace";
-                        ctx.fillText("DIV BOX COLLAPSED: HEIGHT UNBOUNDED", 80, 25);
-                    }
-
-                    this.activeLoop = requestAnimationFrame(loop);
-                };
-                loop();
-            },
-
-            renderClickerGame: function(targetId, isGlitchy, uniqueId) {
-                this.clear();
-                const container = document.getElementById(targetId);
-                container.innerHTML = `
-                    <div style="color:white; text-align:center; padding-top:50px; height:100%; width:100%; background:#111827;">
-                        <h3>Retro Mini-Clicker Arc v${uniqueId}</h3>
-                        <p style="margin:10px 0; color:#9ca3af;">Core Link: ${isGlitchy ? 'Tag Corrupt' : 'Active'}</p>
-                        <button id="arcadeClickBtn" style="padding:15px; background:${isGlitchy ? '#4b5563':'#ec4899'}; color:white; border:none; border-radius:50%; font-size:1.1rem; cursor:pointer; width:80px; height:80px;">
-                            ${isGlitchy ? '???' : 'TAP'}
-                        </button>
-                        <div id="clickScore" style="margin-top:15px; font-size:1.4rem; font-weight:bold;">Taps: 0</div>
-                    </div>`;
-                
-                let count = 0;
-                const btn = document.getElementById("arcadeClickBtn");
-                if(!btn) return;
-                btn.onclick = () => {
-                    if(isGlitchy) {
-                        alert("SyntaxError: The interactive component wrapper was left open down the string pipeline!");
-                        return;
-                    }
-                    count++;
-                    document.getElementById("clickScore").innerText = `Taps: ${count}`;
-                };
-            },
-
-            clear: function() {
-                if(this.activeLoop) cancelAnimationFrame(this.activeLoop);
-                this.activeLoop = null;
             }
         };
 
+        function toggleFullscreen() {
+            const el = document.getElementById("sandbox-wrapper");
+            if (!document.fullscreenElement) {
+                el.requestFullscreen().catch(err => alert(`Error changing view screen: ${err.message}`));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
         let activeChallenge = {};
 
-        // Dynamic Non-Repeating Syllabus Task Core Matrix Generator
+        // Complete source code injection structures to give students real comprehension
+        const GameCodeFactories = {
+            getFlappySource: (glitchToken, seed) => {
+                return `${glitchToken}
+<html>
+<head>
+  <style>
+    body { margin: 0; background: #0f172a; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; }
+    canvas { background: #1e293b; display: block; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 4px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <canvas id="c" width="400" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById("c");
+    const ctx = canvas.getContext("2d");
+    let bY = 160, v = 0, score = 0, over = false;
+    let pipes = [{ x: 400, top: 100, bottom: 220 }];
+    
+    canvas.onclick = () => { if(!over) v = -5.5; else { bY=160; v=0; score=0; pipes=[{x:400,top:100,bottom:220}]; over=false; } };
+
+    function loop() {
+      ctx.fillStyle = "#1e293b"; ctx.fillRect(0,0,400,400);
+      v += 0.25; bY += v;
+      
+      // Render Player Bird
+      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.arc(70, bY, 12, 0, Math.PI*2); ctx.fill();
+
+      // Manage Pipe Vector Array
+      for(let i=0; i<pipes.length; i++) {
+        pipes[i].x -= 2;
+        ctx.fillStyle = "#10b981";
+        ctx.fillRect(pipes[i].x, 0, 45, pipes[i].top);
+        ctx.fillRect(pipes[i].x, pipes[i].bottom, 45, 400 - pipes[i].bottom);
+
+        if(pipes[i].x === 70) score++;
+        
+        // Accurate Collision Pipeline
+        if(((70+12 > pipes[i].x && 70-12 < pipes[i].x+45) && (bY-12 < pipes[i].top || bY+12 > pipes[i].bottom)) || bY > 400 || bY < 0) over = true;
+      }
+      
+      if(pipes[0].x < -45) pipes.shift();
+      if(pipes[pipes.length-1].x < 240) {
+        let t = Math.random() * 160 + 40;
+        pipes.push({ x: 400, top: t, bottom: t + 110 + (${seed} % 15) });
+      }
+
+      ctx.fillStyle = "#fff"; ctx.font = "20px monospace"; ctx.fillText("SCORE: " + score, 20, 40);
+      if(over) { ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0,0,400,400); ctx.fillStyle = "#fff"; ctx.fillText("GAME OVER - CLICK TO RESET", 60, 200); }
+      requestAnimationFrame(loop);
+    }
+    loop();
+  <\/script>
+</body>
+</html>`;
+            },
+
+            getPongSource: (glitchToken, seed) => {
+                return `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { margin: 0; background: #070a12; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    canvas { background: #0b0f19; border: 2px solid #1e293b; }
+  </style>
+</head>
+<body>
+  ${glitchToken}
+  <canvas id="pong" width="400" height="300"></canvas>
+  
+  <script>
+    const canvas = document.getElementById("pong");
+    const ctx = canvas.getContext("2d");
+    let pY = 120, bX = 200, bY = 150, dx = 3, dy = 2;
+    let pH = 60 + (${seed} % 10);
+
+    canvas.onmousemove = (e) => {
+      let rect = canvas.getBoundingClientRect();
+      pY = e.clientY - rect.top - pH/2;
+    };
+
+    function tick() {
+      ctx.fillStyle = "#0b0f19"; ctx.fillRect(0,0,400,300);
+      
+      // Draw User Control Bar
+      ctx.fillStyle = "#3b82f6"; ctx.fillRect(15, pY, 12, pH);
+      
+      // Vector Calculations
+      bX += dx; bY += dy;
+      if(bY < 0 || bY > 300) dy = -dy;
+      if(bX > 400) dx = -dx;
+
+      if(bX < 27 && bY > pY && bY < pY + pH) { dx = -dx; bX = 27; }
+      if(bX < 0) { bX = 200; bY = 150; dx = 3; }
+
+      // Draw Ball Node
+      ctx.fillStyle = "#ef4444"; ctx.beginPath(); ctx.arc(bX, bY, 7, 0, Math.PI*2); ctx.fill();
+      requestAnimationFrame(tick);
+    }
+    tick();
+  <\/script>
+</body>
+</html>`;
+            }
+        };
+
         function generateChallenge() {
             const track = state.currentTrack;
             const diffBadge = document.getElementById("difficulty-badge");
@@ -574,28 +574,26 @@
             const codeInput = document.getElementById("code-input");
             const seedVal = 10 + (state.trackingSeed * 7) % 85;
 
-            // Strip input key listeners before rebinding
             codeInput.oninput = null;
 
             document.querySelectorAll(".course-tab").forEach(tab => {
                 tab.classList.toggle("active", tab.getAttribute("data-track") === track);
             });
 
-            // Handle FREE SANDBOX LAB Layout
+            // Track 5: FREE LAB MODE
             if (track === 'free_lab') {
-                diffBadge.innerText = "FREE LAB ENVIRONMENT";
+                diffBadge.innerText = "FREE LAB CANVAS";
                 diffBadge.style.background = "#a855f7";
                 statsPanel.style.display = "none";
                 taskPanel.style.display = "none";
                 btnGroup.style.display = "none";
 
-                document.getElementById("lesson-header").innerText = "Open Unrestricted Sandbox Canvas";
-                document.getElementById("lesson-desc").innerText = "Type native HTML, CSS styles, or active inline JavaScript modules. Everything will compile instantly into the preview panel viewport frame down below.";
+                document.getElementById("lesson-header").innerText = "Open Workspace Canvas";
+                document.getElementById("lesson-desc").innerText = "Unrestricted ecosystem. Write standard custom HTML, CSS structures, and JavaScript algorithms. Real-time updates push live instantly.";
 
                 codeInput.value = state.freeCodeSaved;
                 AppEngine.renderLiveIframe("sandbox-wrapper", state.freeCodeSaved);
 
-                // Setup Live Real-time Compilation Render Event Hook
                 codeInput.oninput = (e) => {
                     state.freeCodeSaved = e.target.value;
                     save();
@@ -604,118 +602,87 @@
                 return;
             }
 
-            // Restore standard panel view states if returning from Free Lab
+            // Restore standard panel layouts for structured paths
             statsPanel.style.display = "flex";
             taskPanel.style.display = "block";
             btnGroup.style.display = "flex";
             state.trackingSeed++;
 
-            // TRACK 1: BASICS - DOC ARCHITECTURE
+            // BASICS ARCHITECTURE TRACKS
             if (track === 'basics_doc') {
                 diffBadge.innerText = "BASICS: ARCHITECTURE";
                 diffBadge.style.background = "#38bdf8";
 
-                if (state.trackingSeed % 2 === 0) {
-                    activeChallenge = {
-                        title: `Document Rule Initialization (Module #${seedVal})`,
-                        desc: "Browsers require a standard declaration rule framework configuration string on line 1 so the modern rendering rules take priority over historic compatibility configurations.",
-                        task: "Prepend the absolute modern standard document type rule directly on the very first line.",
-                        start: `REPAIR_ME\n<html>\n  <head><title>System_Node_${seedVal}</title></head>\n</html>`,
-                        expected: `<!DOCTYPE html>\n<html>\n  <head><title>System_Node_${seedVal}</title></head>\n</html>`,
-                        hint: "<!DOCTYPE html>",
-                        runPreview: () => AppEngine.renderStaticDOM("sandbox-wrapper", `<div style="font-family:monospace; color:#ef4444;">[!] System Warning: Document Type Blueprint unrecognized. Defaulting to ancient Quirks Simulation Engine mode.</div>`)
-                    };
-                } else {
-                    activeChallenge = {
-                        title: `Root Container Closure Target (Module #${seedVal})`,
-                        desc: "All global standard elements on the page must be securely bound inside matching structural entry and closing bounds.",
-                        task: "Complete the document tree framework configuration by appending the correct terminal root tag element.",
-                        start: `<!DOCTYPE html>\n<html>\n  <head><title>Cluster_${seedVal}</title></head>\n  <body>Core engine state stable.</body>\nREPAIR_ME`,
-                        expected: `<!DOCTYPE html>\n<html>\n  <head><title>Cluster_${seedVal}</title></head>\n  <body>Core engine state stable.</body>\n</html>`,
-                        hint: "</html>",
-                        runPreview: () => AppEngine.renderStaticDOM("sandbox-wrapper", `<h4 style="color:#10b981;">✔ Code Sequence Valid</h4><p style="color:#94a3b8; font-size:0.8rem; margin-top:5px;">Root array mapping parsed successfully through storage arrays.</p>`)
-                    };
-                }
+                activeChallenge = {
+                    title: `Global Core Standard Initializer (Module #${seedVal})`,
+                    desc: "An application needs a formal standard declaration explicitly set on line 1 so the document compiler understands how to parse modern element tags properly.",
+                    task: "Analyze the total document shell map below. Prepend the explicit modern document rule declaration string right above the opening html node.",
+                    start: `REPAIR_ME\n<html>\n<head>\n  <style>body{background:#111; color:#0f0; padding:20px; font-family:monospace;}</style>\n</head>\n<body>\n  <h3>Core Array Terminal Module Status: Active</h3>\n</body>\n</html>`,
+                    expected: `<!DOCTYPE html>\n<html>\n<head>\n  <style>body{background:#111; color:#0f0; padding:20px; font-family:monospace;}</style>\n</head>\n<body>\n  <h3>Core Array Terminal Module Status: Active</h3>\n</body>\n</html>`,
+                    hint: "<!DOCTYPE html>",
+                    runPreview: (glitch) => AppEngine.renderLiveIframe("sandbox-wrapper", glitch ? `<html><body style="background:#221111; color:#f87171; padding:20px; font-family:sans-serif;"><h4>[!] Quirks Warning Emulation Mode</h4>Missing standard line-1 initialization properties.</body></html>` : `<!DOCTYPE html><html><body style="background:#0f172a; color:#34d399; padding:20px; font-family:sans-serif;"><h4>✔ Active Core Map Operational</h4>Standards alignment check cleared.</body></html>`)
+                };
             }
-            // TRACK 2: BASICS - CONTAINERS
             else if (track === 'basics_box') {
                 diffBadge.innerText = "BASICS: CONTAINERS";
                 diffBadge.style.background = "#a78bfa";
 
                 activeChallenge = {
-                    title: `Isolated Section Partition (Module #${seedVal})`,
-                    desc: "Division tags (<div>) create flexible boundaries used to group inline texts or child cards into structured vertical grid arrays.",
-                    task: "Close the lingering layout structural compartment cleanly by supplying the required division close flag text.",
-                    start: `<div class="info-frame" id="box-${seedVal}">\n  <h3>Terminal Data Node</h3>\n  <p>Stream Vector: Stable</p>\nREPAIR_ME`,
-                    expected: `<div class="info-frame" id="box-${seedVal}">\n  <h3>Terminal Data Node</h3>\n  <p>Stream Vector: Stable</p>\n</div>`,
+                    title: `Encapsulated Division Bounds (Module #${seedVal})`,
+                    desc: "A structural division element block requires matched opening and ending boundaries to stop nested node contents from leaking across styles grid vectors.",
+                    task: "Find the open info-card component tree and inject the right partition closure tag directly on line 12.",
+                    start: `<!DOCTYPE html>\n<html>\n<head>\n  <style>body{background:#0b0f19; color:white; padding:15px;} .card{background:#1e293b; padding:15px; border-radius:8px; border:1px dashed #3b82f6;}</style>\n</head>\n<body>\n  <div class="card">\n    <h2>System Memory Node #${seedVal}</h2>\n    <p>Operational stream vector parameters verified clean.</p>\n  REPAIR_ME\n</body>\n</html>`,
+                    expected: `<!DOCTYPE html>\n<html>\n<head>\n  <style>body{background:#0b0f19; color:white; padding:15px;} .card{background:#1e293b; padding:15px; border-radius:8px; border:1px dashed #3b82f6;}</style>\n</head>\n<body>\n  <div class="card">\n    <h2>System Memory Node #${seedVal}</h2>\n    <p>Operational stream vector parameters verified clean.</p>\n  </div>\n</body>\n</html>`,
                     hint: "</div>",
-                    runPreview: (glitch) => AppEngine.renderStaticDOM("sandbox-wrapper", glitch ? `
-                        <div style="border:1px dashed #ef4444; padding:10px; color:#ef4444; font-family:monospace;">
-                            [ERR]: Division component boundaries overlapping. Missing matching segment closure tag down-stream.
-                        </div>` : `
-                        <div style="background:#1e293b; padding:15px; border:1px solid #334155; border-radius:8px;">
-                            <h3 style="color:#38bdf8; font-size:1rem;">Terminal Data Node</h3>
-                            <p style="color:#10b981; font-size:0.85rem; margin-top:6px;">● Stream Vector: Stable</p>
-                        </div>`)
+                    runPreview: (glitch) => AppEngine.renderLiveIframe("sandbox-wrapper", glitch ? `<!DOCTYPE html><html><body style="background:#0b0f19; color:#f87171; padding:20px;">[Syntax Error]: Container unsealed. Layout cascade overflowed grid thresholds.</body></html>` : `<!DOCTYPE html><html><body style="background:#0b0f19; color:white; font-family:sans-serif; padding:20px;"><div style="background:#1e293b; padding:15px; border-radius:8px; border:1px solid #3b82f6;"><h2>System Memory Node #${seedVal}</h2><p style="color:#10b981;">● Operational stream vector parameters verified clean.</p></div></body></html>`)
                 };
             }
-            // TRACK 3: BASICS - INTERACTIVE ELEMENTS
             else if (track === 'basics_ui') {
                 diffBadge.innerText = "BASICS: INTERACTIVE UI";
                 diffBadge.style.background = "#f43f5e";
 
                 activeChallenge = {
-                    title: `Action Widget Event Bounder (Module #${seedVal})`,
-                    desc: "An interactive form button control widget requires exact tag element termination strings to bundle the text label cleanly into clickable interaction nodes.",
-                    task: "Seal the tag architecture chain layout properly by appending the terminal button closure text string.",
-                    start: `<button type="button" id="act-${seedVal}">DISPATCH_PAYLOAD_${seedVal}REPAIR_ME`,
-                    expected: `<button type="button" id="act-${seedVal}">DISPATCH_PAYLOAD_${seedVal}</button>`,
+                    title: `Interactive Submit Closure Loop (Module #${seedVal})`,
+                    desc: "Buttons route critical click event parameters. If left unclosed, downstream event captures collapse.",
+                    task: "Seal the interface system submission control down below by appending the correct button close block.",
+                    start: `<!DOCTYPE html>\n<html>\n<body>\n  <div style="text-align:center; padding-top:40px; font-family:sans-serif;">\n    <h4>Authentication Command Center</h4>\n    <button type="button" onclick="alert('Access Granted')">INITIALIZE_SYSTEM_NODE_${seedVal}REPAIR_ME\n  </div>\n</body>\n</html>`,
+                    expected: `<!DOCTYPE html>\n<html>\n<body>\n  <div style="text-align:center; padding-top:40px; font-family:sans-serif;">\n    <h4>Authentication Command Center</h4>\n    <button type="button" onclick="alert('Access Granted')">INITIALIZE_SYSTEM_NODE_${seedVal}</button>\n  </div>\n</body>\n</html>`,
                     hint: "</button>",
-                    runPreview: (glitch) => AppEngine.renderStaticDOM("sandbox-wrapper", `
-                        <div style="text-align:center; padding-top:30px;">
-                            <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:12px;">Component Verification Testbed</p>
-                            <button style="padding:10px 20px; background:${glitch ? '#475569':'#3b82f6'}; border:none; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Action captured successfully!')">
-                                ${glitch ? 'Malformed DOM Tree Module' : 'DISPATCH_PAYLOAD_' + seedVal}
-                            </button>
-                        </div>`)
+                    runPreview: (glitch) => AppEngine.renderLiveIframe("sandbox-wrapper", glitch ? `<!DOCTYPE html><html><body><div style="padding:20px; color:red;">[DOM Error]: Malformed operational elements template structure.</div></body></html>` : `<!DOCTYPE html><html><body><div style="text-align:center; padding-top:40px; font-family:sans-serif;"><h4>Authentication Command Center</h4><button style="padding:10px 20px; background:#3b82f6; color:white; border:none; border-radius:4px; cursor:pointer;">INITIALIZE_SYSTEM_NODE_${seedVal}</button></div></body></html>`)
                 };
             }
-            // TRACK 4: GAME REPAIR SHOP
+            // GAME REPAIR TRACKS: SHOWING ENTIRE CODE ENGINE
             else {
-                diffBadge.innerText = "ARCADE REPAIR EXPERT";
+                diffBadge.innerText = "ARCADE REPAIR BENCH";
                 diffBadge.style.background = "#10b981";
 
-                const gameTypePick = state.trackingSeed % 3;
+                const gameTypePick = state.trackingSeed % 2;
 
                 if (gameTypePick === 0) {
                     activeChallenge = {
-                        title: `Flappy Bird Logic Assembly (Ticket #${700 + seedVal})`,
-                        desc: "The Flappy rendering engine throws a parsing exception because the system environment layout file misses the modern document rules specification on line 1.",
-                        task: "Inject the modern HTML declaration blueprint string directly onto line 1 to unlock the loop.",
-                        start: `REPAIR_ME\n<div class="flappy-cabinet">\n  \n</div>`,
-                        expected: `<!DOCTYPE html>\n<div class="flappy-cabinet">\n  \n</div>`,
+                        title: `Flappy Core Vector Loop Diagnostics (Ticket #${700 + seedVal})`,
+                        desc: "Review the full source code for this Flappy Bird game! Look at the click canvas hooks, velocity acceleration, and pipe mapping rules. Notice that it fails to display because an unmapped keyword placeholders line 1, throwing an environment standards exception.",
+                        task: "Study the game loop mechanics. Patch line 1 by swapping 'REPAIR_ME' with the proper modern document type string declaration.",
+                        start: GameCodeFactories.getFlappySource("REPAIR_ME", seedVal),
+                        expected: GameCodeFactories.getFlappySource("<!DOCTYPE html>", seedVal),
                         hint: "<!DOCTYPE html>",
-                        runPreview: (glitch) => AppEngine.renderFlappyGame("sandbox-wrapper", glitch, 1 + (seedVal / 90))
-                    };
-                } else if (gameTypePick === 1) {
-                    activeChallenge = {
-                        title: `Pong Collapsible Paddle Container (Ticket #${800 + seedVal})`,
-                        desc: "The paddle matrix bounds collapse to zero grid units because the partition frame block enclosing the vector arena lacks its structural terminal container segment closure.",
-                        task: "Write the matching terminal division box tag sequence at the bottom repair placeholder.",
-                        start: `<div class="pong-enclosure" data-scale="${seedVal}">\n  <canvas id="pongStage"></canvas>\nREPAIR_ME`,
-                        expected: `<div class="pong-enclosure" data-scale="${seedVal}">\n  <canvas id="pongStage"></canvas>\n</div>`,
-                        hint: "</div>",
-                        runPreview: (glitch) => AppEngine.renderPongGame("sandbox-wrapper", glitch, 0.6 + (seedVal / 100))
+                        runPreview: (glitch) => {
+                            const raw = GameCodeFactories.getFlappySource(glitch ? "" : "<!DOCTYPE html>", seedVal);
+                            AppEngine.renderLiveIframe("sandbox-wrapper", glitch ? `<html><body style="background:#261313; color:#f87171; font-family:monospace; padding:30px;"><h3>[Arcade Parsing Error]</h3>Flappy Engine loop crashed on initialization. Reason: Missing modern document standard rules on Line 1. Canvas display container refused to construct dynamic dimensions.</body></html>` : raw);
+                        }
                     };
                 } else {
                     activeChallenge = {
-                        title: `Retro Clicker Event Linker (Ticket #${900 + seedVal})`,
-                        desc: "The button click hook breaks inside the rendering loop because the action title markup sandbox sandwich was left fully unclosed.",
-                        task: "Provide the structural tag sequence required to finalize and encapsulate the button element layout configuration.",
-                        start: `<button id="click-trigger">TAP_INDEX_${seedVal}REPAIR_ME`,
-                        expected: `<button id="click-trigger">TAP_INDEX_${seedVal}</button>`,
-                        hint: "</button>",
-                        runPreview: (glitch) => AppEngine.renderClickerGame("sandbox-wrapper", glitch, seedVal)
+                        title: `Retro Pong Vector Engine Repair (Ticket #${800 + seedVal})`,
+                        desc: "Analyze the total code footprint behind this retro canvas Pong loop. Notice how canvas elements query context structures, handle mouse cursor events, and flip vectors upon bounding box contact. It currently errors out because a structural layout card division element was left split open on line 11.",
+                        task: "Inspect the source structure framework. Replace the 'REPAIR_ME' token on line 11 with a closed structural division element tag.",
+                        start: GameCodeFactories.getPongSource("<div class='cabinet-enclosure'>\n  <p style='color:gray; font-size:12px; margin:0;'>Arcade Unit Ready</p>\n  REPAIR_ME", seedVal),
+                        expected: GameCodeFactories.getPongSource("<div class='cabinet-enclosure'>\n  <p style='color:gray; font-size:12px; margin:0;'>Arcade Unit Ready</p>\n</div>", seedVal),
+                        hint: "</div>",
+                        runPreview: (glitch) => {
+                            const raw = GameCodeFactories.getPongSource(glitch ? "<div class='cabinet-enclosure'>ERR" : "<div class='cabinet-enclosure'></div>", seedVal);
+                            AppEngine.renderLiveIframe("sandbox-wrapper", glitch ? `<html><body style="background:#111; color:#ef4444; font-family:monospace; padding:20px;"><h3>[Enclosure Fault]</h3>Pong physical canvas element failed to paint vector maps. The structural wrapping layout container block was left unclosed down the page stream.</body></html>` : raw);
+                        }
                     };
                 }
             }
@@ -725,7 +692,7 @@
             document.getElementById("lesson-task").innerText = activeChallenge.task;
             document.getElementById("code-input").value = activeChallenge.start;
             document.getElementById("feedback-box").className = "feedback";
-            activeChallenge.runPreview(true); // Always render glitched state first
+            activeChallenge.runPreview(true);
         }
 
         function switchTrack(trackName) {
@@ -734,7 +701,6 @@
             save(); updateUI(); generateChallenge();
         }
 
-        // Action workspace submission validator logic
         document.getElementById("check-btn").addEventListener("click", () => {
             if (state.currentTrack === 'free_lab') return;
 
@@ -743,7 +709,7 @@
             const fBox = document.getElementById("feedback-box");
 
             if (userVal.toLowerCase() === targetVal.toLowerCase()) {
-                fBox.innerText = "✔ STRUCTURE SECURED: Compiling syntax matrix layers... Active Instance Running!";
+                fBox.innerText = "✔ COMPILATION SECURED: Source logic verified. Executing live operational preview instance!";
                 fBox.className = "feedback success";
                 
                 state.xp += 40;
@@ -751,10 +717,10 @@
                 if(state.xp >= state.level * 120) state.level++;
                 
                 save(); updateUI();
-                activeChallenge.runPreview(false); // Remove glitch and render interactive live code module state
-                setTimeout(generateChallenge, 4000);
+                activeChallenge.runPreview(false);
+                setTimeout(generateChallenge, 5000);
             } else {
-                fBox.innerText = `❌ Compilation Mismatch: Expected standard structural output matching: ${activeChallenge.hint}`;
+                fBox.innerText = `❌ Compilation Discrepancy: Check your modified characters. Structural pattern demands: ${activeChallenge.hint}`;
                 fBox.className = "feedback error";
                 state.streak = 0;
                 save(); updateUI();
@@ -768,9 +734,9 @@
         });
 
         document.getElementById("reset-btn").addEventListener("click", () => {
-            if(confirm("Reset all learning track parameters and clean free lab code memory?")) {
-                localStorage.removeItem("unified_sandbox_save_v4");
-                state = { level: 1, streak: 0, xp: 0, trackingSeed: Math.floor(Math.random()*30), currentTrack: 'basics_doc', freeCodeSaved: "\n<div style='padding:20px; text-align:center;'>\n  <h1 style='color:#3b82f6;'>Hello World!</h1>\n  <p>Modify this code to see changes happen live in the preview container below.</p>\n  <button onclick='alert(\"It works!\")' style='padding:10px 20px; background:#10b981; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px;'>Test Button</button>\n</div>" };
+            if(confirm("Wipe cache registers, restore full game engine sources, and return back to level 1?")) {
+                localStorage.removeItem("unified_sandbox_save_v5");
+                state = { level: 1, streak: 0, xp: 0, trackingSeed: Math.floor(Math.random()*25), currentTrack: 'basics_doc', freeCodeSaved: "\n<div style='padding:20px; text-align:center;'>\n  <h1 style='color:#3b82f6;'>Hello World!</h1>\n  <p>Modify this code to see changes happen live in the preview container below.</p>\n  <button onclick='alert(\"It works!\")' style='padding:10px 20px; background:#10b981; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px;'>Test Button</button>\n</div>" };
                 save(); updateUI(); generateChallenge();
             }
         });
@@ -781,7 +747,6 @@
             document.getElementById("stat-xp").innerText = state.xp;
         }
 
-        // Context-Aware RegEx Smart Copilot Engine Integration
         document.getElementById("chat-send").addEventListener("click", processChat);
         document.getElementById("chat-input").addEventListener("keypress", (e) => { if(e.key === 'Enter') processChat(); });
 
@@ -794,26 +759,24 @@
             inputEl.value = "";
 
             setTimeout(() => {
-                let reply = "Sandbox interpreter analyzed your query. Inspect your active canvas layout rules and make sure your markup is cleanly structured.";
+                let reply = "System interpreter analyzed your query. Observe the source properties. Ensure your layout elements cleanly balance structural definitions.";
                 const low = text.toLowerCase();
 
-                if (/doctype|declaration/i.test(low)) {
-                    reply = "<!DOCTYPE html> is the formal standard flag. Placed on line 1, it instructs the browser's parser to execute in modern layout standards mode instead of legacy quirks mode emulation.";
-                } else if (/html/i.test(low) && !/doctype/i.test(low)) {
-                    reply = "The <html> element represents the root container component enclosing all metadata headers, titles, styles, scripts, and body elements across the DOM tree.";
+                if (/loop|requestanimationframe|tick/i.test(low)) {
+                    reply = "The game engines use 'requestAnimationFrame(loop)'. This syncs code ticks with your monitor's fresh rate (usually 60Hz or 140Hz), animating characters without stalling thread computations.";
+                } else if (/canvas|ctx|getcontext/i.test(low)) {
+                    reply = "The <canvas> serves as a blank coordinate grid. Running canvas.getContext('2d') returns a rendering object full of methods like fillRect() and arc() to paint pixels.";
+                } else if (/velocity|v \+=/i.test(low)) {
+                    reply = "In physics loops, adding value to velocity every frame simulates constant gravity. When you click, setting velocity to a negative value spikes the object upward.";
+                } else if (/doctype|declaration/i.test(low)) {
+                    reply = "<!DOCTYPE html> tells the modern web rendering layout engine to drop legacy constraints and accurately calculate structural canvas parameters.";
                 } else if (/div|box|container/i.test(low)) {
-                    reply = "A <div> creates a generic structural division grid element. Forgetting the trailing closed </div> boundary tag causes subsequent layout layers to collapse into each other.";
-                } else if (/button|action|interactive/i.test(low)) {
-                    reply = "Buttons process input action clicks inside game canvases or web panels. Closing tags requires the forward slash structure (e.g., </button>).";
-                } else if (/flappy|pong|game|clicker/i.test(low)) {
-                    reply = "Arcade loops require un-corrupted structural wrapper tags. If any div frame or button tag is left split open, the canvas container elements fail to map canvas layouts.";
-                } else if (/free|custom|sandbox|style|css/i.test(low)) {
-                    reply = "In the Free Sandbox track, you can build custom interfaces completely unhindered! Try adding inline style attributes like style='background: red; color: white;' to tags to design your layout.";
+                    reply = "Closing container boundaries ensures that elements like canvas games keep their correct dimensions instead of shrinking into dead blocks.";
                 } else if (/hint|stuck|help/i.test(low)) {
                     if (state.currentTrack === 'free_lab') {
-                        reply = "You are in the Free Sandbox Lab! There are no missing keywords here. Try writing a custom paragraph tag like '<p>My App</p>' to see it instantly generate below.";
+                        reply = "No active errors in Free Lab mode! Try creating an input layout element: '<input type=\"color\">' to add features.";
                     } else {
-                        reply = `For this specific track assignment, try appending "${activeChallenge.hint}" inside the targeted workshop lines.`;
+                        reply = `To pass verification, locate the breakdown marker and apply: "${activeChallenge.hint}".`;
                     }
                 }
                 appendMsg(reply, "bot");
