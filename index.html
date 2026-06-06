@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero-to-Hero Infinite HTML & Arcade Repair</title>
+    <title>Infinite Full-Stack Sandbox Workspace</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Infinite Arcade">
     <meta name="theme-color" content="#0f172a">
-
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Zero-to-Hero%20Infinite%20Arcade%22,%22short_name%22:%22Infinite%20Arcade%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22}">
 
     <style>
         :root {
@@ -52,9 +49,9 @@
             font-size: 0.8rem;
             font-weight: bold;
             z-index: 9999;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            border-bottom: 1px solid var(--accent-success);
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-bottom: 1px solid var(--accent-color);
         }
 
         header {
@@ -66,9 +63,57 @@
 
         h1 {
             font-size: 2rem;
-            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            background: linear-gradient(to right, #38bdf8, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .course-selector-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .selector-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #94a3b8;
+            letter-spacing: 0.05em;
+        }
+
+        .course-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .course-tab {
+            background: #101726;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .course-tab:hover {
+            border-color: #3b82f6;
+            color: #fff;
+        }
+
+        .course-tab.active {
+            background: #1e293b;
+            border-color: #38bdf8;
+            color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
         }
 
         .stats-container {
@@ -83,6 +128,8 @@
             max-width: 600px;
         }
 
+        .stat-box { text-align: center; }
+
         .stat-value {
             font-size: 1.3rem;
             font-weight: bold;
@@ -94,10 +141,6 @@
             color: #94a3b8;
         }
 
-        .danger-zone {
-            margin-bottom: 15px;
-        }
-
         .btn-reset {
             background: transparent;
             color: #64748b;
@@ -106,12 +149,10 @@
             padding: 4px 10px;
             border-radius: 6px;
             cursor: pointer;
+            margin-bottom: 15px;
         }
 
-        .btn-reset:hover {
-            color: #f87171;
-            border-color: #ef4444;
-        }
+        .btn-reset:hover { color: #f87171; border-color: #ef4444; }
 
         .main-layout {
             display: grid;
@@ -122,9 +163,7 @@
         }
 
         @media (min-width: 900px) {
-            .main-layout {
-                grid-template-columns: 1fr 1fr;
-            }
+            .main-layout { grid-template-columns: 1fr 1fr; }
         }
 
         .card {
@@ -146,7 +185,6 @@
         }
 
         .badge {
-            background: #f59e0b;
             color: #000;
             padding: 2px 8px;
             border-radius: 10px;
@@ -181,10 +219,7 @@
             outline: none;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
+        .btn-group { display: flex; gap: 10px; }
 
         button.action-btn {
             flex: 1;
@@ -211,17 +246,15 @@
         .feedback.success { display: block; background: rgba(16, 185, 129, 0.2); color: #34d399; }
         .feedback.error { display: block; background: rgba(239, 68, 68, 0.2); color: #f87171; }
 
-        /* Preview Window styles */
         .preview-container {
             background: #000;
             border-radius: 8px;
-            height: 240px;
+            height: 280px;
             position: relative;
             overflow: hidden;
             border: 2px solid #334155;
         }
 
-        /* Smart AI Chatbot Panel Styles */
         .chat-section {
             border-top: 1px solid var(--border-color);
             padding-top: 10px;
@@ -246,10 +279,7 @@
         .chat-msg.user { background: #1e3a8a; align-self: flex-end; color: #93c5fd; }
         .chat-msg.bot { background: #1e293b; align-self: flex-start; color: #e2e8f0; }
 
-        .chat-input-wrapper {
-            display: flex;
-            gap: 6px;
-        }
+        .chat-input-wrapper { display: flex; gap: 6px; }
 
         .chat-input-wrapper input {
             flex: 1;
@@ -275,17 +305,28 @@
 </head>
 <body>
 
-    <div id="network-status">● Engine Operational: Local Sandboxed Storage</div>
+    <div id="network-status">● Core Sandbox Active: Multi-Track Framework</div>
 
     <header>
-        <h1>Infinite Arcade Repair Shop</h1>
-        <p>Fix structural layout wrappers to restore functional code blocks and play compiled mini-games.</p>
+        <h1>Infinite Basics & Game Repair Sandbox</h1>
+        <p>Switch between fundamental development tracks or load live mini-games to patch structural engine bugs.</p>
     </header>
+
+    <!-- Syllabus Hub Navigation Matrix -->
+    <div class="course-selector-container">
+        <div class="selector-label">Syllabus Track Selector</div>
+        <div class="course-tabs">
+            <button class="course-tab active" data-track="basics_doc" onclick="switchTrack('basics_doc')">📄 1. Basics: Architecture</button>
+            <button class="course-tab" data-track="basics_box" onclick="switchTrack('basics_box')">📦 2. Basics: Containers</button>
+            <button class="course-tab" data-track="basics_ui" onclick="switchTrack('basics_ui')">🖱️ 3. Basics: Interactive</button>
+            <button class="course-tab" data-track="game_repair" onclick="switchTrack('game_repair')">🎮 4. Arcade Game Repair Shop</button>
+        </div>
+    </div>
 
     <div class="stats-container">
         <div class="stat-box">
             <div class="stat-value" id="stat-level">1</div>
-            <div class="stat-label">Repair Level</div>
+            <div class="stat-label">Dev Level</div>
         </div>
         <div class="stat-box">
             <div class="stat-value" id="stat-streak">0</div>
@@ -297,16 +338,16 @@
         </div>
     </div>
 
-    <div class="danger-zone">
-        <button id="reset-btn" class="btn-reset">🔄 Wipe Saved Sandbox Data</button>
+    <div>
+        <button id="reset-btn" class="btn-reset">🔄 Wipe Local Sandbox Progress</button>
     </div>
 
     <div class="main-layout">
-        <!-- Workbench Terminal Layout -->
+        <!-- Live Workbench -->
         <div class="card">
             <div class="lesson-title">
-                <span id="lesson-header">Acquiring Bug Report...</span>
-                <span class="badge" id="difficulty-badge">SCANNING</span>
+                <span id="lesson-header">Connecting Core Pipeline...</span>
+                <span class="badge" id="difficulty-badge">BOOTING</span>
             </div>
             <div class="lesson-concept" id="lesson-desc">...</div>
             
@@ -320,17 +361,17 @@
             </div>
 
             <div class="btn-group">
-                <button class="action-btn btn-skip" id="skip-btn">Skip Machine</button>
-                <button class="action-btn btn-check" id="check-btn">Patch Structure</button>
+                <button class="action-btn btn-skip" id="skip-btn">Skip Module</button>
+                <button class="action-btn btn-check" id="check-btn">Patch Code</button>
             </div>
 
             <div class="feedback" id="feedback-box"></div>
 
-            <!-- Smart AI Copilot Section -->
+            <!-- Smart AI Debug Copilot Component -->
             <div class="chat-section">
-                <strong>📟 Real-Time Copilot Debugger</strong>
+                <strong>📟 Dynamic Real-Time Copilot</strong>
                 <div class="chat-history" id="chat-box">
-                    <div class="chat-msg bot">Systems online. Ask me anything about tags, elements, brackets, or how the code breaks!</div>
+                    <div class="chat-msg bot">Systems ready. Ask me custom questions about tags, structures, document types, or game states!</div>
                 </div>
                 <div class="chat-input-wrapper">
                     <input type="text" id="chat-input" placeholder="Type your layout or syntax question...">
@@ -339,49 +380,56 @@
             </div>
         </div>
 
-        <!-- Render Pipeline Display Screen -->
+        <!-- Render Target Panel Screen -->
         <div class="card">
-            <div class="lesson-title">Arcade Screen Engine Component</div>
+            <div class="lesson-title">Sandbox Execution Output</div>
             <div class="preview-container" id="sandbox-wrapper">
-                <!-- Sandbox Canvas injected dynamically -->
+                <!-- Content injected dynamically via the tracking script engine -->
             </div>
         </div>
     </div>
 
     <script>
-        let state = { level: 1, streak: 0, xp: 0, trackingSeed: 0 };
+        let state = { level: 1, streak: 0, xp: 0, trackingSeed: 0, currentTrack: 'basics_doc' };
         
-        if (localStorage.getItem("arcade_repair_save")) {
-            try { state = JSON.parse(localStorage.getItem("arcade_repair_save")); } catch(e) {}
+        if (localStorage.getItem("unified_sandbox_save_v3")) {
+            try { state = JSON.parse(localStorage.getItem("unified_sandbox_save_v3")); } catch(e) {}
         }
 
-        function save() { localStorage.setItem("arcade_repair_save", JSON.stringify(state)); }
+        function save() { localStorage.setItem("unified_sandbox_save_v3", JSON.stringify(state)); }
 
-        // Core Micro Game Drivers built inside sandboxed canvases
-        const GamesManager = {
+        // Core Micro Game & App Engine Display Controller
+        const AppEngine = {
             activeLoop: null,
-            initFlappy: function(targetId, isGlitchy, speedMod = 1) {
+            
+            renderStaticDOM: function(targetId, htmlContent) {
                 this.clear();
                 const container = document.getElementById(targetId);
-                container.innerHTML = `<canvas id="gameCanvas" width="400" height="240" style="display:block; width:100%; height:100%;"></canvas>`;
+                container.innerHTML = `<div style="padding:15px; background:#0f172a; height:100%; color:#f8fafc; font-size:0.9rem; line-height:1.5;">${htmlContent}</div>`;
+            },
+
+            renderFlappyGame: function(targetId, isGlitchy, speedMod = 1) {
+                this.clear();
+                const container = document.getElementById(targetId);
+                container.innerHTML = `<canvas id="gameCanvas" width="400" height="280" style="display:block; width:100%; height:100%;"></canvas>`;
                 const canvas = document.getElementById("gameCanvas");
                 if(!canvas) return;
                 const ctx = canvas.getContext("2d");
                 
-                let birdY = 100, velocity = 0, score = 0;
-                let pipes = [{x: 400, top: 60, bottom: 140}];
+                let birdY = 120, velocity = 0, score = 0;
+                let pipes = [{x: 400, top: 70, bottom: 155}];
                 let gameOver = false;
 
-                canvas.onclick = () => { if(!gameOver) velocity = -4.5; else this.initFlappy(targetId, isGlitchy, speedMod); };
+                canvas.onclick = () => { if(!gameOver) velocity = -4.5; else this.renderFlappyGame(targetId, isGlitchy, speedMod); };
 
                 const run = () => {
                     ctx.fillStyle = isGlitchy ? "#2b1111" : "#1e293b";
-                    ctx.fillRect(0,0,400,240);
+                    ctx.fillRect(0,0,400,280);
                     
                     if (isGlitchy) {
                         ctx.fillStyle = "#ef4444";
                         ctx.font = "14px monospace";
-                        ctx.fillText("CRITICAL ERROR: DOCTYPE COMPILATION MISSING", 20, 120);
+                        ctx.fillText("CRITICAL ERROR: DOCTYPE COMPILATION MISSING", 20, 140);
                         return;
                     }
 
@@ -395,87 +443,89 @@
                         p.x -= (2 * speedMod);
                         ctx.fillStyle = "#10b981";
                         ctx.fillRect(p.x, 0, 40, p.top);
-                        ctx.fillRect(p.x, p.bottom, 40, 240 - p.bottom);
+                        ctx.fillRect(p.x, p.bottom, 40, 280 - p.bottom);
 
                         if(p.x === 60) score++;
 
-                        if(((60+10 > p.x && 60-10 < p.x+40) && (birdY-10 < p.top || birdY+10 > p.bottom)) || birdY > 240 || birdY < 0) {
+                        if(((60+10 > p.x && 60-10 < p.x+40) && (birdY-10 < p.top || birdY+10 > p.bottom)) || birdY > 280 || birdY < 0) {
                             gameOver = true;
                         }
                     });
 
                     if(pipes.length && pipes[0].x < -40) pipes.shift();
                     if(!pipes.length || pipes[pipes.length-1].x < 260) {
-                        let top = Math.random() * 100 + 20;
-                        pipes.push({x: 400, top: top, bottom: top + 80});
+                        let top = Math.random() * 110 + 20;
+                        pipes.push({x: 400, top: top, bottom: top + 85});
                     }
 
                     ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif";
                     ctx.fillText(`Score: ${score}`, 15, 30);
 
                     if(gameOver) {
-                        ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(0,0,400,240);
-                        ctx.fillStyle = "#fff"; ctx.fillText("GAME OVER - Click to Replay", 90, 120);
+                        ctx.fillStyle = "rgba(0,0,0,0.6)"; ctx.fillRect(0,0,400,280);
+                        ctx.fillStyle = "#fff"; ctx.fillText("GAME OVER - Click to Replay", 95, 140);
                     } else {
                         this.activeLoop = requestAnimationFrame(run);
                     }
                 };
                 run();
             },
-            initPong: function(targetId, isGlitchy, sizeMod = 1) {
+
+            renderPongGame: function(targetId, isGlitchy, sizeMod = 1) {
                 this.clear();
                 const container = document.getElementById(targetId);
-                container.innerHTML = `<canvas id="gameCanvas" width="400" height="240" style="display:block; width:100%; height:100%;"></canvas>`;
+                container.innerHTML = `<canvas id="gameCanvas" width="400" height="280" style="display:block; width:100%; height:100%;"></canvas>`;
                 const canvas = document.getElementById("gameCanvas");
                 const ctx = canvas.getContext("2d");
 
-                let paddleY = 80, ballX = 200, ballY = 120, dx = 3, dy = 2;
-                let paddleH = isGlitchy ? 5 : 50 * sizeMod;
+                let paddleY = 100, ballX = 200, ballY = 140, dx = 3, dy = 2;
+                let paddleH = isGlitchy ? 4 : 55 * sizeMod;
 
                 canvas.onmousemove = (e) => {
                     const rect = canvas.getBoundingClientRect();
-                    paddleY = ((e.clientY - rect.top) / rect.height) * 240 - paddleH/2;
+                    paddleY = ((e.clientY - rect.top) / rect.height) * 280 - paddleH/2;
                 };
 
                 const loop = () => {
-                    ctx.fillStyle = "#0f172a"; ctx.fillRect(0,0,400,240);
+                    ctx.fillStyle = "#0f172a"; ctx.fillRect(0,0,400,280);
                     
                     ctx.fillStyle = "#3b82f6";
                     ctx.fillRect(10, paddleY, 12, paddleH);
 
                     ballX += dx; ballY += dy;
-                    if(ballY < 0 || ballY > 240) dy = -dy;
+                    if(ballY < 0 || ballY > 280) dy = -dy;
                     if(ballX > 400) dx = -dx;
 
                     if(ballX < 22 && ballY > paddleY && ballY < paddleY + paddleH) {
                         dx = -dx; ballX = 22;
                     }
 
-                    if(ballX < 0) { ballX = 200; ballY = 120; dx = 3; }
+                    if(ballX < 0) { ballX = 200; ballY = 140; dx = 3; }
 
                     ctx.fillStyle = "#ef4444";
                     ctx.beginPath(); ctx.arc(ballX, ballY, 6, 0, Math.PI*2); ctx.fill();
 
                     if(isGlitchy) {
                         ctx.fillStyle = "#ef4444"; ctx.font = "12px monospace";
-                        ctx.fillText("DIV BOX COLLAPSED: HEIGHT UNBOUNDED", 80, 20);
+                        ctx.fillText("DIV BOX COLLAPSED: HEIGHT UNBOUNDED", 80, 25);
                     }
 
                     this.activeLoop = requestAnimationFrame(loop);
                 };
                 loop();
             },
-            initClicker: function(targetId, isGlitchy) {
+
+            renderClickerGame: function(targetId, isGlitchy, uniqueId) {
                 this.clear();
                 const container = document.getElementById(targetId);
                 container.innerHTML = `
-                    <div style="color:white; text-align:center; padding-top:40px; height:100%; width:100%; background:#111827;">
-                        <h3>Retro Clicker v1.0</h3>
-                        <p style="margin:10px 0; color:#9ca3af;">Status: ${isGlitchy ? 'Tag Broken' : 'Operational'}</p>
-                        <button id="arcadeClickBtn" style="padding:15px; background:${isGlitchy ? '#4b5563':'#ec4899'}; color:white; border:none; border-radius:50%; font-size:1.2rem; cursor:pointer; width:80px; height:80px;">
+                    <div style="color:white; text-align:center; padding-top:50px; height:100%; width:100%; background:#111827;">
+                        <h3>Retro Mini-Clicker Arc v${uniqueId}</h3>
+                        <p style="margin:10px 0; color:#9ca3af;">Core Link: ${isGlitchy ? 'Tag Corrupt' : 'Active'}</p>
+                        <button id="arcadeClickBtn" style="padding:15px; background:${isGlitchy ? '#4b5563':'#ec4899'}; color:white; border:none; border-radius:50%; font-size:1.1rem; cursor:pointer; width:80px; height:80px;">
                             ${isGlitchy ? '???' : 'TAP'}
                         </button>
-                        <div id="clickScore" style="margin-top:15px; font-size:1.5rem; font-weight:bold;">Clicks: 0</div>
+                        <div id="clickScore" style="margin-top:15px; font-size:1.4rem; font-weight:bold;">Taps: 0</div>
                     </div>`;
                 
                 let count = 0;
@@ -483,117 +533,189 @@
                 if(!btn) return;
                 btn.onclick = () => {
                     if(isGlitchy) {
-                        alert("SyntaxError: The button text element wrapper was never cleanly closed!");
+                        alert("SyntaxError: The interactive component wrapper was left open down the string pipeline!");
                         return;
                     }
                     count++;
-                    document.getElementById("clickScore").innerText = `Clicks: ${count}`;
+                    document.getElementById("clickScore").innerText = `Taps: ${count}`;
                 };
             },
+
             clear: function() {
                 if(this.activeLoop) cancelAnimationFrame(this.activeLoop);
                 this.activeLoop = null;
             }
         };
 
-        // Non-repeating contextual generator matrix
         let activeChallenge = {};
-        
+
+        // Dynamic Non-Repeating Syllabus Task Core Matrix Generator
         function generateChallenge() {
             state.trackingSeed++;
-            const typePick = (state.trackingSeed + state.level) % 3;
+            const track = state.currentTrack;
             const diffBadge = document.getElementById("difficulty-badge");
-            
-            // Generate non-repeating problem attributes based on tracking parameters
-            const dynamicVar = 10 + (state.trackingSeed * 3) % 80;
-            
-            if(typePick === 0) {
-                diffBadge.innerText = "FLAPPY REPAIR";
-                diffBadge.style.background = "#ec4899";
-                
+            const seedVal = 10 + (state.trackingSeed * 7) % 85;
+
+            document.querySelectorAll(".course-tab").forEach(tab => {
+                tab.classList.toggle("active", tab.getAttribute("data-track") === track);
+            });
+
+            // TRACK 1: BASICS - DOC ARCHITECTURE
+            if (track === 'basics_doc') {
+                diffBadge.innerText = "BASICS: ARCHITECTURE";
+                diffBadge.style.background = "#38bdf8";
+
+                if (state.trackingSeed % 2 === 0) {
+                    activeChallenge = {
+                        title: `Document Rule Initialization (Module #${seedVal})`,
+                        desc: "Browsers require a standard declaration rule framework configuration string on line 1 so the modern rendering rules take priority over historic compatibility configurations.",
+                        task: "Prepend the absolute modern standard document type rule directly on the very first line.",
+                        start: `REPAIR_ME\n<html>\n  <head><title>System_Node_${seedVal}</title></head>\n</html>`,
+                        expected: `<!DOCTYPE html>\n<html>\n  <head><title>System_Node_${seedVal}</title></head>\n</html>`,
+                        hint: "<!DOCTYPE html>",
+                        runPreview: () => AppEngine.renderStaticDOM("sandbox-wrapper", `<div style="font-family:monospace; color:#ef4444;">[!] System Warning: Document Type Blueprint unrecognized. Defaulting to ancient Quirks Simulation Engine mode.</div>`)
+                    };
+                } else {
+                    activeChallenge = {
+                        title: `Root Container Closure Target (Module #${seedVal})`,
+                        desc: "All global standard elements on the page must be securely bound inside matching structural entry and closing bounds.",
+                        task: "Complete the document tree framework configuration by appending the correct terminal root tag element.",
+                        start: `<!DOCTYPE html>\n<html>\n  <head><title>Cluster_${seedVal}</title></head>\n  <body>Core engine state stable.</body>\nREPAIR_ME`,
+                        expected: `<!DOCTYPE html>\n<html>\n  <head><title>Cluster_${seedVal}</title></head>\n  <body>Core engine state stable.</body>\n</html>`,
+                        hint: "</html>",
+                        runPreview: () => AppEngine.renderStaticDOM("sandbox-wrapper", `<h4 style="color:#10b981;">✔ Code Sequence Valid</h4><p style="color:#94a3b8; font-size:0.8rem; margin-top:5px;">Root array mapping parsed successfully through storage arrays.</p>`)
+                    };
+                }
+            }
+            // TRACK 2: BASICS - CONTAINERS
+            else if (track === 'basics_box') {
+                diffBadge.innerText = "BASICS: CONTAINERS";
+                diffBadge.style.background = "#a78bfa";
+
                 activeChallenge = {
-                    title: `Flappy Bird File Handler (Ticket #${100 + state.trackingSeed})`,
-                    desc: "The game loop fails to render because the server logic detects an un-declared layout profile standard.",
-                    task: "Prepend the modern engine specification declaration sequence rules dynamically on line 1.",
-                    start: `REPAIR_ME\n<div class="arcade-screen">\n  <!-- SpeedFactor: ${dynamicVar} -->\n</div>`,
-                    expected: `<!DOCTYPE html>\n<div class="arcade-screen">\n  <!-- SpeedFactor: ${dynamicVar} -->\n</div>`,
-                    hint: "<!DOCTYPE html>",
-                    runPreview: (glitch) => GamesManager.initFlappy("sandbox-wrapper", glitch, 1 + (dynamicVar/100))
-                };
-            } 
-            else if(typePick === 1) {
-                diffBadge.innerText = "PONG DIV PATCH";
-                diffBadge.style.background = "#3b82f6";
-                
-                activeChallenge = {
-                    title: `Pong Matrix Wrapper (Ticket #${200 + state.trackingSeed})`,
-                    desc: "The canvas paddle element dimension scales to zero because the surrounding partition interface box tag has no termination element container.",
-                    task: "Close the lingering division configuration frame at the very bottom line sequence placeholder.",
-                    start: `<div class="pong-box" data-scale="${dynamicVar}">\n  <canvas id="stage"></canvas>\nREPAIR_ME`,
-                    expected: `<div class="pong-box" data-scale="${dynamicVar}">\n  <canvas id="stage"></canvas>\n</div>`,
+                    title: `Isolated Section Partition (Module #${seedVal})`,
+                    desc: "Division tags (<div>) create flexible boundaries used to group inline texts or child cards into structured vertical grid arrays.",
+                    task: "Close the lingering layout structural compartment cleanly by supplying the required division close flag text.",
+                    start: `<div class="info-frame" id="box-${seedVal}">\n  <h3>Terminal Data Node</h3>\n  <p>Stream Vector: Stable</p>\nREPAIR_ME`,
+                    expected: `<div class="info-frame" id="box-${seedVal}">\n  <h3>Terminal Data Node</h3>\n  <p>Stream Vector: Stable</p>\n</div>`,
                     hint: "</div>",
-                    runPreview: (glitch) => GamesManager.initPong("sandbox-wrapper", glitch, 0.5 + (dynamicVar/100))
+                    runPreview: (glitch) => AppEngine.renderStaticDOM("sandbox-wrapper", glitch ? `
+                        <div style="border:1px dashed #ef4444; padding:10px; color:#ef4444; font-family:monospace;">
+                            [ERR]: Division component boundaries overlapping. Missing matching segment closure tag down-stream.
+                        </div>` : `
+                        <div style="background:#1e293b; padding:15px; border:1px solid #334155; border-radius:8px;">
+                            <h3 style="color:#38bdf8; font-size:1rem;">Terminal Data Node</h3>
+                            <p style="color:#10b981; font-size:0.85rem; margin-top:6px;">● Stream Vector: Stable</p>
+                        </div>`)
                 };
-            } 
-            else {
-                diffBadge.innerText = "CLICKER SYNTAX";
-                diffBadge.style.background = "#10b981";
-                
+            }
+            // TRACK 3: BASICS - INTERACTIVE ELEMENTS
+            else if (track === 'basics_ui') {
+                diffBadge.innerText = "BASICS: INTERACTIVE UI";
+                diffBadge.style.background = "#f43f5e";
+
                 activeChallenge = {
-                    title: `Clicker Interaction Linker (Ticket #${300 + state.trackingSeed})`,
-                    desc: `The interactive event hooks can't bind because the action title markup sandwich was left open.`,
-                    task: "Add the required closing element format configuration string to seal the element.",
-                    start: `<button id="trigger">TAP_INDEX_${dynamicVar}REPAIR_ME`,
-                    expected: `<button id="trigger">TAP_INDEX_${dynamicVar}</button>`,
+                    title: `Action Widget Event Bounder (Module #${seedVal})`,
+                    desc: "An interactive form button control widget requires exact tag element termination strings to bundle the text label cleanly into clickable interaction nodes.",
+                    task: "Seal the tag architecture chain layout properly by appending the terminal button closure text string.",
+                    start: `<button type="button" id="act-${seedVal}">DISPATCH_PAYLOAD_${seedVal}REPAIR_ME`,
+                    expected: `<button type="button" id="act-${seedVal}">DISPATCH_PAYLOAD_${seedVal}</button>`,
                     hint: "</button>",
-                    runPreview: (glitch) => GamesManager.initClicker("sandbox-wrapper", glitch)
+                    runPreview: (glitch) => AppEngine.renderStaticDOM("sandbox-wrapper", `
+                        <div style="text-align:center; padding-top:30px;">
+                            <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:12px;">Component Verification Testbed</p>
+                            <button style="padding:10px 20px; background:${glitch ? '#475569':'#3b82f6'}; border:none; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="alert('Action captured successfully!')">
+                                ${glitch ? 'Malformed DOM Tree Module' : 'DISPATCH_PAYLOAD_' + seedVal}
+                            </button>
+                        </div>`)
                 };
+            }
+            // TRACK 4: GAME REPAIR SHOP (FLAPPY BIRD, PONG, retro CLICKER CORES)
+            else {
+                diffBadge.innerText = "ARCADE REPAIR EXPERT";
+                diffBadge.style.background = "#10b981";
+
+                const gameTypePick = state.trackingSeed % 3;
+
+                if (gameTypePick === 0) {
+                    activeChallenge = {
+                        title: `Flappy Bird Logic Assembly (Ticket #${700 + seedVal})`,
+                        desc: "The Flappy rendering engine throws a parsing exception because the system environment layout file misses the modern document rules specification on line 1.",
+                        task: "Inject the modern HTML declaration blueprint string directly onto line 1 to unlock the loop.",
+                        start: `REPAIR_ME\n<div class="flappy-cabinet">\n  <!-- SpeedFactorDelta: ${seedVal} -->\n</div>`,
+                        expected: `<!DOCTYPE html>\n<div class="flappy-cabinet">\n  <!-- SpeedFactorDelta: ${seedVal} -->\n</div>`,
+                        hint: "<!DOCTYPE html>",
+                        runPreview: (glitch) => AppEngine.renderFlappyGame("sandbox-wrapper", glitch, 1 + (seedVal / 90))
+                    };
+                } else if (gameTypePick === 1) {
+                    activeChallenge = {
+                        title: `Pong Collapsible Paddle Container (Ticket #${800 + seedVal})`,
+                        desc: "The paddle matrix bounds collapse to zero grid units because the partition frame block enclosing the vector arena lacks its structural terminal container segment closure.",
+                        task: "Write the matching terminal division box tag sequence at the bottom repair placeholder.",
+                        start: `<div class="pong-enclosure" data-scale="${seedVal}">\n  <canvas id="pongStage"></canvas>\nREPAIR_ME`,
+                        expected: `<div class="pong-enclosure" data-scale="${seedVal}">\n  <canvas id="pongStage"></canvas>\n</div>`,
+                        hint: "</div>",
+                        runPreview: (glitch) => AppEngine.renderPongGame("sandbox-wrapper", glitch, 0.6 + (seedVal / 100))
+                    };
+                } else {
+                    activeChallenge = {
+                        title: `Retro Clicker Event Linker (Ticket #${900 + seedVal})`,
+                        desc: "The button click hook breaks inside the rendering loop because the action title markup sandbox sandwich was left fully unclosed.",
+                        task: "Provide the structural tag sequence required to finalize and encapsulate the button element layout configuration.",
+                        start: `<button id="click-trigger">TAP_INDEX_${seedVal}REPAIR_ME`,
+                        expected: `<button id="click-trigger">TAP_INDEX_${seedVal}</button>`,
+                        hint: "</button>",
+                        runPreview: (glitch) => AppEngine.renderClickerGame("sandbox-wrapper", glitch, seedVal)
+                    };
+                }
             }
 
             document.getElementById("lesson-header").innerText = activeChallenge.title;
             document.getElementById("lesson-desc").innerText = activeChallenge.desc;
             document.getElementById("lesson-task").innerText = activeChallenge.task;
             document.getElementById("code-input").value = activeChallenge.start;
-            
             document.getElementById("feedback-box").className = "feedback";
-            activeChallenge.runPreview(true); // run in glitched state initially
+            activeChallenge.runPreview(true); // Always render glitched state first
         }
 
-        // Action controls
+        function switchTrack(trackName) {
+            state.currentTrack = trackName;
+            state.streak = 0;
+            save(); updateUI(); generateChallenge();
+        }
+
+        // Action workspace submission validator logic
         document.getElementById("check-btn").addEventListener("click", () => {
             const userVal = document.getElementById("code-input").value.trim().replace(/\s+/g, ' ');
             const targetVal = activeChallenge.expected.trim().replace(/\s+/g, ' ');
             const fBox = document.getElementById("feedback-box");
 
-            if(userVal.toLowerCase() === targetVal.toLowerCase()) {
-                fBox.innerText = "✔ STRUCTURE SECURED: Compiling logic blocks... Simulation Active!";
+            if (userVal.toLowerCase() === targetVal.toLowerCase()) {
+                fBox.innerText = "✔ STRUCTURE SECURED: Compiling syntax matrix layers... Active Instance Running!";
                 fBox.className = "feedback success";
                 
                 state.xp += 40;
                 state.streak++;
                 if(state.xp >= state.level * 120) state.level++;
                 
-                save();
-                updateUI();
-                activeChallenge.runPreview(false); // unlock functional game play mechanics
+                save(); updateUI();
+                activeChallenge.runPreview(false); // Remove glitch and render interactive live code module state
                 setTimeout(generateChallenge, 4000);
             } else {
-                fBox.innerText = `❌ Warning: Frame mismatch. Expected structural pattern like: ${activeChallenge.hint}`;
+                fBox.innerText = `❌ Compilation Mismatch: Expected standard structural output matching: ${activeChallenge.hint}`;
                 fBox.className = "feedback error";
                 state.streak = 0;
-                save();
-                updateUI();
+                save(); updateUI();
             }
         });
 
         document.getElementById("skip-btn").addEventListener("click", () => {
-            state.streak = 0;
-            save(); updateUI(); generateChallenge();
+            state.streak = 0; save(); updateUI(); generateChallenge();
         });
 
         document.getElementById("reset-btn").addEventListener("click", () => {
-            if(confirm("Wipe all locally compiled progression profiles back to Level 1?")) {
-                state = { level: 1, streak: 0, xp: 0, trackingSeed: Math.floor(Math.random()*50) };
+            if(confirm("Reset all learning track progress parameters and returns to level 1?")) {
+                state = { level: 1, streak: 0, xp: 0, trackingSeed: Math.floor(Math.random()*30), currentTrack: 'basics_doc' };
                 save(); updateUI(); generateChallenge();
             }
         });
@@ -604,7 +726,7 @@
             document.getElementById("stat-xp").innerText = state.xp;
         }
 
-        // Context-Aware RegEx Debugger Chatbot Logic
+        // Context-Aware RegEx Smart Copilot Engine Integration
         document.getElementById("chat-send").addEventListener("click", processChat);
         document.getElementById("chat-input").addEventListener("keypress", (e) => { if(e.key === 'Enter') processChat(); });
 
@@ -617,19 +739,21 @@
             inputEl.value = "";
 
             setTimeout(() => {
-                let reply = "I analyzed your question. To fix this specific machine structure, look closely at the target goal statement and ensure every '<' bracket has a corresponding closed partner slice.";
+                let reply = "Sandbox interpreter analyzed your query. Inspect your active task goals and check that your code markers terminate with appropriate closing slash operators.";
                 const low = text.toLowerCase();
 
-                if(/doctype/i.test(low)) {
-                    reply = "<!DOCTYPE html> is the modern standard flag declaration ruleset. It goes at line 1 so the system parser doesn't fallback into legacy quirks compatibility simulation mode.";
-                } else if(/div/i.test(low)) {
-                    reply = "A <div> element is simply an organizational division container box layer. Opening with <div> demands a trailing structural closing </div> box closure frame step.";
-                } else if(/slash|\//i.test(low)) {
-                    reply = "Forward slashes inside tag clusters specify closure sequences (e.g., </p> or </div>). An element with no slash is treated as an active opening element layer generator.";
-                } else if(/bracket|<|>/i.test(low)) {
-                    reply = "HTML tag structures rely on angle brackets. Missing a single '<' or '>' character corrupts the compilation matrix string causing subsequent layout lines to break down.";
-                } else if(/hint|help|stuck/i.test(low)) {
-                    reply = `For this exact ticket, focus on inputting "${activeChallenge.hint}" inside the designated location pattern array to bridge the logic system gap.`;
+                if (/doctype|declaration/i.test(low)) {
+                    reply = "<!DOCTYPE html> is the formal standard flag. Placed on line 1, it instructs the browser's parser to execute in modern layout standards mode instead of legacy quirks mode emulation.";
+                } else if (/html/i.test(low) && !/doctype/i.test(low)) {
+                    reply = "The <html> element represents the root container component enclosing all metadata headers, titles, styles, scripts, and body elements across the DOM tree.";
+                } else if (/div|box|container/i.test(low)) {
+                    reply = "A <div> creates a generic structural division grid element. Forgetting the trailing closed </div> boundary tag causes subsequent layout layers to collapse into each other.";
+                } else if (/button|action|interactive/i.test(low)) {
+                    reply = "Buttons process input action clicks inside game canvases or web panels. Closing tags requires the forward slash structure (e.g., </button>).";
+                } else if (/flappy|pong|game|clicker/i.test(low)) {
+                    reply = "Arcade loops require un-corrupted structural wrapper tags. If any div frame or button tag is left split open, the canvas container elements fail to map canvas layouts.";
+                } else if (/hint|stuck|help/i.test(low)) {
+                    reply = `For this specific track assignment, try appending "${activeChallenge.hint}" inside the targeted workshop lines.`;
                 }
                 appendMsg(reply, "bot");
             }, 400);
