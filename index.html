@@ -87,7 +87,7 @@
 
         .course-tabs {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 10px;
         }
 
@@ -207,7 +207,7 @@
 
         textarea {
             width: 100%;
-            height: 140px;
+            height: 180px;
             background: #090d16;
             color: #67e8f9;
             border: 1px solid var(--border-color);
@@ -249,10 +249,18 @@
         .preview-container {
             background: #000;
             border-radius: 8px;
-            height: 280px;
+            height: 320px;
             position: relative;
             overflow: hidden;
             border: 2px solid #334155;
+        }
+
+        /* Iframe styling for running free code securely */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #ffffff;
         }
 
         .chat-section {
@@ -308,22 +316,22 @@
     <div id="network-status">● Core Sandbox Active: Multi-Track Framework</div>
 
     <header>
-        <h1>Infinite Basics & Game Repair Sandbox</h1>
-        <p>Switch between fundamental development tracks or load live mini-games to patch structural engine bugs.</p>
+        <h1>Infinite Basics, Games & Free Lab Sandbox</h1>
+        <p>Switch between fundamental development tracks, repair classic arcade components, or code entirely from scratch.</p>
     </header>
 
-    <!-- Syllabus Hub Navigation Matrix -->
     <div class="course-selector-container">
         <div class="selector-label">Syllabus Track Selector</div>
         <div class="course-tabs">
             <button class="course-tab active" data-track="basics_doc" onclick="switchTrack('basics_doc')">📄 1. Basics: Architecture</button>
             <button class="course-tab" data-track="basics_box" onclick="switchTrack('basics_box')">📦 2. Basics: Containers</button>
             <button class="course-tab" data-track="basics_ui" onclick="switchTrack('basics_ui')">🖱️ 3. Basics: Interactive</button>
-            <button class="course-tab" data-track="game_repair" onclick="switchTrack('game_repair')">🎮 4. Arcade Game Repair Shop</button>
+            <button class="course-tab" data-track="game_repair" onclick="switchTrack('game_repair')">🎮 4. Game Repair Shop</button>
+            <button class="course-tab" data-track="free_lab" onclick="switchTrack('free_lab')">🚀 5. Free Sandbox Lab</button>
         </div>
     </div>
 
-    <div class="stats-container">
+    <div class="stats-container" id="stats-panel">
         <div class="stat-box">
             <div class="stat-value" id="stat-level">1</div>
             <div class="stat-label">Dev Level</div>
@@ -343,7 +351,6 @@
     </div>
 
     <div class="main-layout">
-        <!-- Live Workbench -->
         <div class="card">
             <div class="lesson-title">
                 <span id="lesson-header">Connecting Core Pipeline...</span>
@@ -351,7 +358,7 @@
             </div>
             <div class="lesson-concept" id="lesson-desc">...</div>
             
-            <div class="task-box">
+            <div class="task-box" id="task-panel">
                 <strong>Glitch Diagnostic:</strong>
                 <div id="lesson-task">...</div>
             </div>
@@ -360,14 +367,13 @@
                 <textarea id="code-input" spellcheck="false"></textarea>
             </div>
 
-            <div class="btn-group">
+            <div class="btn-group" id="action-btn-group">
                 <button class="action-btn btn-skip" id="skip-btn">Skip Module</button>
                 <button class="action-btn btn-check" id="check-btn">Patch Code</button>
             </div>
 
             <div class="feedback" id="feedback-box"></div>
 
-            <!-- Smart AI Debug Copilot Component -->
             <div class="chat-section">
                 <strong>📟 Dynamic Real-Time Copilot</strong>
                 <div class="chat-history" id="chat-box">
@@ -380,23 +386,21 @@
             </div>
         </div>
 
-        <!-- Render Target Panel Screen -->
         <div class="card">
             <div class="lesson-title">Sandbox Execution Output</div>
             <div class="preview-container" id="sandbox-wrapper">
-                <!-- Content injected dynamically via the tracking script engine -->
-            </div>
+                </div>
         </div>
     </div>
 
     <script>
-        let state = { level: 1, streak: 0, xp: 0, trackingSeed: 0, currentTrack: 'basics_doc' };
+        let state = { level: 1, streak: 0, xp: 0, trackingSeed: 0, currentTrack: 'basics_doc', freeCodeSaved: "\n<div style='padding:20px; text-align:center;'>\n  <h1 style='color:#3b82f6;'>Hello World!</h1>\n  <p>Modify this code to see changes happen live in the preview container below.</p>\n  <button onclick='alert(\"It works!\")' style='padding:10px 20px; background:#10b981; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px;'>Test Button</button>\n</div>" };
         
-        if (localStorage.getItem("unified_sandbox_save_v3")) {
-            try { state = JSON.parse(localStorage.getItem("unified_sandbox_save_v3")); } catch(e) {}
+        if (localStorage.getItem("unified_sandbox_save_v4")) {
+            try { state = JSON.parse(localStorage.getItem("unified_sandbox_save_v4")); } catch(e) {}
         }
 
-        function save() { localStorage.setItem("unified_sandbox_save_v3", JSON.stringify(state)); }
+        function save() { localStorage.setItem("unified_sandbox_save_v4", JSON.stringify(state)); }
 
         // Core Micro Game & App Engine Display Controller
         const AppEngine = {
@@ -406,6 +410,17 @@
                 this.clear();
                 const container = document.getElementById(targetId);
                 container.innerHTML = `<div style="padding:15px; background:#0f172a; height:100%; color:#f8fafc; font-size:0.9rem; line-height:1.5;">${htmlContent}</div>`;
+            },
+
+            renderLiveIframe: function(targetId, rawHTML) {
+                this.clear();
+                const container = document.getElementById(targetId);
+                container.innerHTML = `<iframe id="preview-frame"></iframe>`;
+                const frame = document.getElementById("preview-frame");
+                const frameDoc = frame.contentDocument || frame.contentWindow.document;
+                frameDoc.open();
+                frameDoc.write(rawHTML);
+                frameDoc.close();
             },
 
             renderFlappyGame: function(targetId, isGlitchy, speedMod = 1) {
@@ -551,14 +566,49 @@
 
         // Dynamic Non-Repeating Syllabus Task Core Matrix Generator
         function generateChallenge() {
-            state.trackingSeed++;
             const track = state.currentTrack;
             const diffBadge = document.getElementById("difficulty-badge");
+            const taskPanel = document.getElementById("task-panel");
+            const btnGroup = document.getElementById("action-btn-group");
+            const statsPanel = document.getElementById("stats-panel");
+            const codeInput = document.getElementById("code-input");
             const seedVal = 10 + (state.trackingSeed * 7) % 85;
+
+            // Strip input key listeners before rebinding
+            codeInput.oninput = null;
 
             document.querySelectorAll(".course-tab").forEach(tab => {
                 tab.classList.toggle("active", tab.getAttribute("data-track") === track);
             });
+
+            // Handle FREE SANDBOX LAB Layout
+            if (track === 'free_lab') {
+                diffBadge.innerText = "FREE LAB ENVIRONMENT";
+                diffBadge.style.background = "#a855f7";
+                statsPanel.style.display = "none";
+                taskPanel.style.display = "none";
+                btnGroup.style.display = "none";
+
+                document.getElementById("lesson-header").innerText = "Open Unrestricted Sandbox Canvas";
+                document.getElementById("lesson-desc").innerText = "Type native HTML, CSS styles, or active inline JavaScript modules. Everything will compile instantly into the preview panel viewport frame down below.";
+
+                codeInput.value = state.freeCodeSaved;
+                AppEngine.renderLiveIframe("sandbox-wrapper", state.freeCodeSaved);
+
+                // Setup Live Real-time Compilation Render Event Hook
+                codeInput.oninput = (e) => {
+                    state.freeCodeSaved = e.target.value;
+                    save();
+                    AppEngine.renderLiveIframe("sandbox-wrapper", e.target.value);
+                };
+                return;
+            }
+
+            // Restore standard panel view states if returning from Free Lab
+            statsPanel.style.display = "flex";
+            taskPanel.style.display = "block";
+            btnGroup.style.display = "flex";
+            state.trackingSeed++;
 
             // TRACK 1: BASICS - DOC ARCHITECTURE
             if (track === 'basics_doc') {
@@ -630,7 +680,7 @@
                         </div>`)
                 };
             }
-            // TRACK 4: GAME REPAIR SHOP (FLAPPY BIRD, PONG, retro CLICKER CORES)
+            // TRACK 4: GAME REPAIR SHOP
             else {
                 diffBadge.innerText = "ARCADE REPAIR EXPERT";
                 diffBadge.style.background = "#10b981";
@@ -642,8 +692,8 @@
                         title: `Flappy Bird Logic Assembly (Ticket #${700 + seedVal})`,
                         desc: "The Flappy rendering engine throws a parsing exception because the system environment layout file misses the modern document rules specification on line 1.",
                         task: "Inject the modern HTML declaration blueprint string directly onto line 1 to unlock the loop.",
-                        start: `REPAIR_ME\n<div class="flappy-cabinet">\n  <!-- SpeedFactorDelta: ${seedVal} -->\n</div>`,
-                        expected: `<!DOCTYPE html>\n<div class="flappy-cabinet">\n  <!-- SpeedFactorDelta: ${seedVal} -->\n</div>`,
+                        start: `REPAIR_ME\n<div class="flappy-cabinet">\n  \n</div>`,
+                        expected: `<!DOCTYPE html>\n<div class="flappy-cabinet">\n  \n</div>`,
                         hint: "<!DOCTYPE html>",
                         runPreview: (glitch) => AppEngine.renderFlappyGame("sandbox-wrapper", glitch, 1 + (seedVal / 90))
                     };
@@ -686,6 +736,8 @@
 
         // Action workspace submission validator logic
         document.getElementById("check-btn").addEventListener("click", () => {
+            if (state.currentTrack === 'free_lab') return;
+
             const userVal = document.getElementById("code-input").value.trim().replace(/\s+/g, ' ');
             const targetVal = activeChallenge.expected.trim().replace(/\s+/g, ' ');
             const fBox = document.getElementById("feedback-box");
@@ -710,12 +762,15 @@
         });
 
         document.getElementById("skip-btn").addEventListener("click", () => {
-            state.streak = 0; save(); updateUI(); generateChallenge();
+            if (state.currentTrack !== 'free_lab') {
+                state.streak = 0; save(); updateUI(); generateChallenge();
+            }
         });
 
         document.getElementById("reset-btn").addEventListener("click", () => {
-            if(confirm("Reset all learning track progress parameters and returns to level 1?")) {
-                state = { level: 1, streak: 0, xp: 0, trackingSeed: Math.floor(Math.random()*30), currentTrack: 'basics_doc' };
+            if(confirm("Reset all learning track parameters and clean free lab code memory?")) {
+                localStorage.removeItem("unified_sandbox_save_v4");
+                state = { level: 1, streak: 0, xp: 0, trackingSeed: Math.floor(Math.random()*30), currentTrack: 'basics_doc', freeCodeSaved: "\n<div style='padding:20px; text-align:center;'>\n  <h1 style='color:#3b82f6;'>Hello World!</h1>\n  <p>Modify this code to see changes happen live in the preview container below.</p>\n  <button onclick='alert(\"It works!\")' style='padding:10px 20px; background:#10b981; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px;'>Test Button</button>\n</div>" };
                 save(); updateUI(); generateChallenge();
             }
         });
@@ -739,7 +794,7 @@
             inputEl.value = "";
 
             setTimeout(() => {
-                let reply = "Sandbox interpreter analyzed your query. Inspect your active task goals and check that your code markers terminate with appropriate closing slash operators.";
+                let reply = "Sandbox interpreter analyzed your query. Inspect your active canvas layout rules and make sure your markup is cleanly structured.";
                 const low = text.toLowerCase();
 
                 if (/doctype|declaration/i.test(low)) {
@@ -752,8 +807,14 @@
                     reply = "Buttons process input action clicks inside game canvases or web panels. Closing tags requires the forward slash structure (e.g., </button>).";
                 } else if (/flappy|pong|game|clicker/i.test(low)) {
                     reply = "Arcade loops require un-corrupted structural wrapper tags. If any div frame or button tag is left split open, the canvas container elements fail to map canvas layouts.";
+                } else if (/free|custom|sandbox|style|css/i.test(low)) {
+                    reply = "In the Free Sandbox track, you can build custom interfaces completely unhindered! Try adding inline style attributes like style='background: red; color: white;' to tags to design your layout.";
                 } else if (/hint|stuck|help/i.test(low)) {
-                    reply = `For this specific track assignment, try appending "${activeChallenge.hint}" inside the targeted workshop lines.`;
+                    if (state.currentTrack === 'free_lab') {
+                        reply = "You are in the Free Sandbox Lab! There are no missing keywords here. Try writing a custom paragraph tag like '<p>My App</p>' to see it instantly generate below.";
+                    } else {
+                        reply = `For this specific track assignment, try appending "${activeChallenge.hint}" inside the targeted workshop lines.`;
+                    }
                 }
                 appendMsg(reply, "bot");
             }, 400);
