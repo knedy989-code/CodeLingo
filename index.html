@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero-to-Hero Infinite HTML</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Infinite HTML">
+    <meta name="theme-color" content="#0f172a">
+
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Zero-to-Hero%20Infinite%20HTML%22,%22short_name%22:%22Infinite%20HTML%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22,%22icons%22:[{%22src%22:%22data:image/svg+xml;utf8,<svg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20100%20100%27><rect%20width=%27100%27%20height=%27100%27%20fill=%27%231e293b%27/><text%20y=%27.9em%27%20font-size=%2770%27%20x=%2710%27>🎮</text></svg>%22,%22sizes%22:%22512x512%22,%22type%22:%22image/svg+xml%22}]}@">
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent-color: #3b82f6;
+            --accent-success: #22c55e;
+            --accent-error: #ef4444;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            padding-top: 45px;
+        }
+
+        /* Live Connection Status Banner */
+        #network-status {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .online-status {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border-bottom: 1px solid #22c55e;
+        }
+
+        .offline-status {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border-bottom: 1px solid #f59e0b;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 5px;
+            font-size: 2.2rem;
+        }
+
+        .badge {
+            background: #f59e0b;
+            color: #0f172a;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            padding: 12px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        /* Danger Zone Styles */
+        .danger-zone {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 15px;
+        }
+
+        .btn-reset {
+            background: transparent;
+            color: #64748b;
+            border: 1px dashed #475569;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: normal;
+            transition: all 0.2s;
+            flex: none;
+        }
+
+        .btn-reset:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border-color: #ef4444;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        @media (min-width: 850px) {
+            .main-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lesson-title {
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .lesson-concept {
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .box-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .task-box {
+            background: rgba(59, 130, 246, 0.15);
+            border: 2px dashed #60a5fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .task-title {
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+        }
+
+        #lesson-task {
+            font-size: 1rem;
+            color: #f1f5f9;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            background: #090d16;
+            color: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 1.05rem;
+            resize: none;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-check {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .btn-check:hover {
+            background: #16a34a;
+        }
+
+        .btn-skip {
+            background: #475569;
+            color: #f1f5f9;
+        }
+
+        .btn-skip:hover {
+            background: #334155;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            border: 1px solid #22c55e;
+        }
+
+        .feedback.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid #ef4444;
+        }
+
+        .preview-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-window {
+            flex: 1;
+            background: white;
+            color: black;
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 270px;
+            border: 2px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .preview-header {
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* Game UI Arcade View Elements */
+        .arcade-screen {
+            background: #1e1b4b;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 4px solid #4338ca;
+        }
+        .arcade-btn {
+            background: #f43f5e;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .game-card {
+            background: #065f46;
+            border: 2px dashed #34d399;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="network-status" class="online-status">
+        <span>● App Status: Connected & Saved Offline</span>
+    </div>
+
+    <header>
+        <h1>Zero-to-Hero Infinite HTML</h1>
+        <p>Master elements, doctypes, and divs—then fix arcade games using everything you learned!</p>
+        <div class="badge" id="difficulty-badge">Stage 1: Basics</div>
+    </header>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-value" id="stat-level">1</div>
+            <div class="stat-label">Your Level</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="stat-streak">0</div>
+            <div class="stat-label">Streak 🔥</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="stat-xp">0</div>
+            <div class="stat-label">XP</div>
+        </div>
+    </div>
+
+    <div class="danger-zone">
+        <button id="reset-btn" class="btn-reset">⚠️ Reset Course Progress</button>
+    </div>
+
+    <div class="main-layout">
+        <div class="card">
+            <h2 class="lesson-title" id="lesson-header">Loading...</h2>
+            <div class="lesson-concept" id="lesson-desc"></div>
+            
+            <div class="task-box">
+                <div class="task-title">Your Goal:</div>
+                <div id="lesson-task"></div>
+            </div>
+
+            <div class="editor-container">
+                <div class="box-label">Your Code Box:</div>
+                <textarea id="code-input" spellcheck="false" placeholder="Type here..."></textarea>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-skip" id="skip-btn">Skip</button>
+                <button class="btn-check" id="check-btn">Check Code</button>
+            </div>
+
+            <div class="feedback" id="feedback-box"></div>
+        </div>
+
+        <div class="card preview-card">
+            <div class="preview-header" id="preview-title-text">Live Browser Preview:</div>
+            <div class="preview-window" id="live-preview"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. PWA COMPONENT REGISTRATION (MANIFEST & OFFLINE ENGINE) ---
+        const swScript = `
+            const CACHE_NAME = "html-infinite-v3";
+            self.addEventListener("install", (e) => {
+                e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(["/", "./", "index.html"])));
+            });
+            self.addEventListener("fetch", (e) => {
+                e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
+            });
+        `;
+        
+        if ("serviceWorker" in navigator) {
+            const blob = new Blob([swScript], { type: "text/javascript" });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(err => console.log("SW registration bypassed setup."));
+        }
+
+        // --- 2. LIVE APP BRAND HARDWARE CONNECTION MONITOR ---
+        const statusBanner = document.getElementById("network-status");
+        
+        function updateStatusBanner() {
+            if (navigator.onLine) {
+                statusBanner.className = "online-status";
+                statusBanner.innerHTML = "<span>● App Status: Connected & Saved Offline</span>";
+            } else {
+                statusBanner.className = "offline-status";
+                statusBanner.innerHTML = "<span>📴 App Status: Running Offline Mode Perfectly</span>";
+            }
+        }
+        window.addEventListener("online", updateStatusBanner);
+        window.addEventListener("offline", updateStatusBanner);
+        updateStatusBanner();
+
+        // --- 3. STATE PERSISTENCE ENGINE ---
+        let playerState = { level: 1, streak: 0, xp: 0 };
+
+        if (localStorage.getItem("infiniteHTML_progress")) {
+            try {
+                playerState = JSON.parse(localStorage.getItem("infiniteHTML_progress"));
+            } catch(e) {
+                console.error("Failed to parse saved state", e);
+            }
+        }
+
+        function saveProgress() {
+            localStorage.setItem("infiniteHTML_progress", JSON.stringify(playerState));
+        }
+
+        // --- 4. CORE APPS ENGINE & GENERATOR LOGIC ---
+        const wordsPool = ["Hello World", "Welcome Guest", "Pizza Time", "Cat Kingdom", "Level Complete"];
+        const textsPool = ["HTML is very cool.", "This is a basic text line.", "Browsers read markup tags.", "Step by step coding rules."];
+        const gamesPool = ["Space Invaders", "Ninja Jumper", "Pixel Clicker", "Dino Runner", "Cube Craft"];
+
+        let currentChallenge = {};
+
+        function generateInfiniteChallenge() {
+            let level = playerState.level;
+            let badge = document.getElementById("difficulty-badge");
+            let previewTitle = document.getElementById("preview-title-text");
+
+            let randomWord = wordsPool[Math.floor(Math.random() * wordsPool.length)];
+            let randomText = textsPool[Math.floor(Math.random() * textsPool.length)];
+            let randomGame = gamesPool[Math.floor(Math.random() * gamesPool.length)];
+
+            if (level <= 2) {
+                badge.innerText = "Stage 1: Tag Basics";
+                badge.style.background = "#22c55e";
+                previewTitle.innerText = "Live Browser Preview:";
+                
+                if (Math.random() > 0.5) {
+                    currentChallenge = {
+                        title: "Closing the Sandwich",
+                        desc: "HTML elements need a closing tag bun. A closing tag always matches the opening tag but has a forward slash inside like <h1> content </h1>.",
+                        task: `Finish the header! Type the missing closing tag </h1> at the end of the text.`,
+                        startingCode: `<h1>${randomWord}`,
+                        expectedAnswer: `<h1>${randomWord}</h1>`,
+                        hint: `Type exactly: </h1>`
+                    };
+                } else {
+                    currentChallenge = {
+                        title: "Opening the Sandwich",
+                        desc: "Before writing standard paragraph sentences, you must tell the browser it is starting by using an opening <p> tag.",
+                        task: `Add the missing paragraph opening tag <p> at the absolute front of the text string.`,
+                        startingCode: `${randomWord}</p>`,
+                        expectedAnswer: `<p>${randomWord}</p>`,
+                        hint: `Type exactly: <p>`
+                    };
+                }
+            }
+            else if (level === 3) {
+                badge.innerText = "Stage 2: Full Elements";
+                badge.style.background = "#3b82f6";
+                previewTitle.innerText = "Live Browser Preview:";
+
+                currentChallenge = {
+                    title: "Writing Whole Paragraphs",
+                    desc: "Now try writing everything on your own! Wrap text contents inside a starting <p> tag and a closing </p> tag.",
+                    task: `Type the entire paragraph element containing exactly this phrase text: ${randomText}`,
+                    startingCode: ``,
+                    expectedAnswer: `<p>${randomText}</p>`,
+                    hint: `Type exactly: <p>${randomText}</p>`
+                };
+            }
+            else if (level === 4) {
+                badge.innerText = "Stage 3: Document Declarations";
+                badge.style.background = "#a855f7";
+                previewTitle.innerText = "Live Browser Preview:";
+
+                currentChallenge = {
+                    title: "The Starting Line",
+                    desc: "Every real HTML file on earth must start with a document declaration. Writing <!DOCTYPE html> on line 1 tells the browser to render the page correctly using modern code standards.",
+                    task: "Type the required declaration header text string at the very top line placeholder.",
+                    startingCode: `REPAIR_ME\n<html>\n  <p>The page is ready.</p>\n</html>`,
+                    expectedAnswer: `<!DOCTYPE html>\n<html>\n  <p>The page is ready.</p>\n</html>`,
+                    hint: "Replace REPAIR_ME with exactly: <!DOCTYPE html>"
+                };
+            }
+            else if (level === 5) {
+                badge.innerText = "Stage 4: Building Boxes";
+                badge.style.background = "#f97316";
+                previewTitle.innerText = "Live Browser Preview:";
+
+                currentChallenge = {
+                    title: "Grouping Elements with Divs",
+                    desc: "A <div> tag is an invisible box container used to bundle separate lines of code together. You open it with <div> and close it using </div>.",
+                    task: "Close out the parent division container layer by replacing the REPAIR_ME placeholder.",
+                    startingCode: `<div>\n  <h1>User Profile</h1>\n  <p>Status: Online</p>\nREPAIR_ME`,
+                    expectedAnswer: `<div>\n  <h1>User Profile</h1>\n  <p>Status: Online</p>\n</div>`,
+                    hint: "Replace REPAIR_ME with exactly: </div>"
+                };
+            }
+            else {
+                badge.innerText = `Stage 5: Game Repair Shop (Level ${level})`;
+                badge.style.background = "#ec4899";
+                previewTitle.innerText = "Arcade Monitor Screen:";
+
+                let gameGlitchTemplates = [
+                    {
+                        title: "Game Engine Doctype Error",
+                        desc: `The ${randomGame} screen won't turn on because the browser engine doesn't see a modern document type declaration header script rule!`,
+                        task: "Inject the modern doctype declaration header string code onto the very first line of the file.",
+                        startingCode: `REPAIR_ME\n<div class="arcade-screen">\n  <h2>${randomGame}</h2>\n  <p>Insert Coin to Play</p>\n</div>`,
+                        expectedAnswer: `<!DOCTYPE html>\n<div class="arcade-screen">\n  <h2>${randomGame}</h2>\n  <p>Insert Coin to Play</p>\n</div>`,
+                        hint: "Fix line 1 by writing exactly: <!DOCTYPE html>"
+                    },
+                    {
+                        title: "Broken Screen Division Box",
+                        desc: `The user interface wrap layer for ${randomGame} is completely bleeding out of bounds because the screen's main <div> box isn't closed!`,
+                        task: "Seal the broken layout framework by closing the division element block cleanly at the bottom line.",
+                        startingCode: `<div class="arcade-screen">\n  <h1>${randomGame}</h1>\n  <p>Current Score: 0</p>\nREPAIR_ME`,
+                        expectedAnswer: `<div class="arcade-screen">\n  <h1>${randomGame}</h1>\n  <p>Current Score: 0</p>\n</div>`,
+                        hint: "Replace REPAIR_ME placeholder line at the bottom with exactly: </div>"
+                    },
+                    {
+                        title: "Missing HUD Title Open Bun",
+                        desc: `The HUD scoreboard asset title for ${randomGame} isn't processing because its main heading opening tag structure was wiped out.`,
+                        task: "Repair the broken title line by adding the primary big header opening element tag asset.",
+                        startingCode: `<div class="arcade-screen">\n  REPAIR_ME${randomGame}</h1>\n</div>`,
+                        expectedAnswer: `<div class="arcade-screen">\n  <h1>${randomGame}</h1>\n</div>`,
+                        hint: "Replace REPAIR_ME text code box with exactly: <h1>"
+                    },
+                    {
+                        title: "Broken Button Tag Sandwich",
+                        desc: `The 'PLAY NOW' action trigger menu link element on ${randomGame} is completely disabled because its layout text wrapper won't close!`,
+                        task: "Provide the missing closing header tag so that text behaves correctly inside its navigation button styling.",
+                        startingCode: `<div class="arcade-screen">\n  <h2>Menu Screen</h2>\n  <a href="#" class="arcade-btn">PLAY NOWREPAIR_ME\n</div>`,
+                        expectedAnswer: `<div class="arcade-screen">\n  <h2>Menu Screen</h2>\n  <a href="#" class="arcade-btn">PLAY NOW</a>\n</div>`,
+                        hint: "Replace REPAIR_ME text value code box placeholder with exactly: </a>"
+                    },
+                    {
+                        title: "Shattered Item Box Divider",
+                        desc: `The inventory item panel container card layout box inside ${randomGame} is completely shattered because the inner item <div> tag is missing its open bracket.`,
+                        task: "Repair the broken inventory structural component block element opening line tag markup.",
+                        startingCode: `<div class="arcade-screen">\n  REPAIR_ME\n    <h3>Equipped Item</h3>\n    <p>Damage: +15</p>\n  </div>\n</div>`,
+                        expectedAnswer: `<div class="arcade-screen">\n  <div class="game-card">\n    <h3>Equipped Item</h3>\n    <p>Damage: +15</p>\n  </div>\n</div>`,
+                        hint: "Replace REPAIR_ME string using exactly: <div class=\"game-card\">"
+                    },
+                    {
+                        title: "Glitchy Score Description Text",
+                        desc: `The normal paragraph stat text description inside ${randomGame} failed compilation routines because the closing paragraph bun has vanished.`,
+                        task: "Fix the plain text display line by closing its text paragraph tag correctly.",
+                        startingCode: `<div class="arcade-screen">\n  <h2>High Score Board</h2>\n  <p>Player 1 is currently leading the lobby REPAIR_ME\n</div>`,
+                        expectedAnswer: `<div class="arcade-screen">\n  <h2>High Score Board</h2>\n  <p>Player 1 is currently leading the lobby </p>\n</div>`,
+                        hint: "Replace REPAIR_ME string placeholder using exactly: </p>"
+                    }
+                ];
+                currentChallenge = gameGlitchTemplates[Math.floor(Math.random() * gameGlitchTemplates.length)];
+            }
+
+            document.getElementById("lesson-header").innerText = currentChallenge.title;
+            document.getElementById("lesson-desc").innerText = currentChallenge.desc;
+            document.getElementById("lesson-task").innerText = currentChallenge.task;
+            
+            const fieldInput = document.getElementById("code-input");
+            fieldInput.value = currentChallenge.startingCode;
+            document.getElementById("live-preview").innerHTML = fieldInput.value;
+            document.getElementById("feedback-box").className = "feedback";
+        }
+
+        document.getElementById("code-input").addEventListener("input", function() {
+            document.getElementById("live-preview").innerHTML = this.value;
+        });
+
+        document.getElementById("check-btn").addEventListener("click", function() {
+            const rawUser = document.getElementById("code-input").value.trim().replace(/\s+/g, ' ');
+            const rawTarget = currentChallenge.expectedAnswer.trim().replace(/\s+/g, ' ');
+            const feedbackBox = document.getElementById("feedback-box");
+
+            if (rawUser.toLowerCase() === rawTarget.toLowerCase()) {
+                feedbackBox.innerText = "🎉 MARVELOUS JOB! Code verified successfully. Progressing forward... +30 XP";
+                feedbackBox.className = "feedback success";
+                
+                playerState.xp += 30;
+                playerState.streak += 1;
+                
+                if (playerState.xp >= playerState.level * 90) {
+                    playerState.level += 1;
+                }
+                
+                saveProgress();
+                updatePlatformStatsUI();
+                setTimeout(generateInfiniteChallenge, 1800);
+            } else {
+                feedbackBox.innerText = `❌ Code mismatch. Check your tags carefully! Hint: ${currentChallenge.hint}`;
+                feedbackBox.className = "feedback error";
+                playerState.streak = 0;
+                saveProgress();
+                updatePlatformStatsUI();
+            }
+        });
+
+        document.getElementById("skip-btn").addEventListener("click", function() {
+            playerState.streak = 0;
+            saveProgress();
+            updatePlatformStatsUI();
+            generateInfiniteChallenge();
+        });
+
+        // Progress Reset Trigger Logic
+        document.getElementById("reset-btn").addEventListener("click", function() {
+            const confirmation = confirm("Are you sure you want to reset all your hard-earned levels, XP, and streaks back to zero? This cannot be undone.");
+            if (confirmation) {
+                playerState = { level: 1, streak: 0, xp: 0 };
+                saveProgress();
+                updatePlatformStatsUI();
+                generateInfiniteChallenge();
+                
+                const feedbackBox = document.getElementById("feedback-box");
+                feedbackBox.innerText = "🔄 Progress completely reset back to Level 1.";
+                feedbackBox.className = "feedback success";
+            }
+        });
+
+        function updatePlatformStatsUI() {
+            document.getElementById("stat-level").innerText = playerState.level;
+            document.getElementById("stat-streak").innerText = playerState.streak;
+            document.getElementById("stat-xp").innerText = playerState.xp;
+        }
+
+        window.onload = function() {
+            updatePlatformStatsUI();
+            generateInfiniteChallenge();
+        };
+    </script>
+</body>
+</html>
